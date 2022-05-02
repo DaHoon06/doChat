@@ -11,9 +11,13 @@ const routes: Array<RouteConfig> = [
   {
     path:'/doChat',
     name: 'index',
-    component: () => import('@/views/Home.vue')
+    component: () => import('@/views/Home.vue'),
+  },
+  {
+    path:'/chat',
+    name: 'chat',
+    component: () => import('@/views/chat/ChatList.vue'),
   }
-
 ]
 
 const router = new VueRouter({

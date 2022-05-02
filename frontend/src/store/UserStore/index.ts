@@ -1,6 +1,5 @@
 import { Module } from 'vuex';
 import { ins as axios } from '@/utils/axios';
-import store from "@/store";
 
 const UserStore: Module<any, any> = {
   namespaced: true,

@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios';
-import store from '@/store';
 
 const baseURL = process.env.NODE_ENV === 'dev' ? '/api' : '/api'
 
