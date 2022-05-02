@@ -7,8 +7,8 @@
       </div>
 
       <div>
-        <label class="nickName" for="nickName"><small>닉네임을 입력해주세요.</small></label>
-        <input type="text" class="nickName" id="nickName" v-model="nickName"/>
+        <label class="nickName" for="name"><small>닉네임을 입력해주세요.</small></label>
+        <input type="text" class="name" id="name" v-model="name"/>
       </div>
 
       <div>
@@ -24,11 +24,11 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class LoginComponent extends Vue {
-  nickName = '';
+  name = '';
 
   async login() {
     const sendData = {
-      nickName: this.nickName,
+      name: this.name,
     };
     const result = await this.$store.dispatch('userStore/login', sendData);
     if (result) await this.$router.push('/chat');
@@ -95,12 +95,12 @@ input {
   width: 3em;
 }
 
-.nickName {
+.name {
   display: block;
   font-weight: 500;
   font-size: 14px;
 }
-.nickName:nth-child(2) {
+.name:nth-child(2) {
   margin: auto;
 }
 

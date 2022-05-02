@@ -30,7 +30,7 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   try {
-    const { meta, name } = to;
+    const { meta } = to;
     const { unauthorized } = meta || { unauthorized: true };
 
     if (unauthorized) return next();

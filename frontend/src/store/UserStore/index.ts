@@ -1,34 +1,36 @@
 import { Module } from 'vuex';
 import { ins as axios } from '@/utils/axios';
+import { IStore } from "@/interfaces/common";
 
-const UserStore: Module<any, any> = {
+const UserStore: Module<IStore.State, IStore.State> = {
   namespaced: true,
   state: {
     isLogin: false,
-    nickName: '',
+    name: '',
     token: '',
   },
   getters: {
     isLogin: state => state.isLogin,
     token: state => state.token,
-    nickName: store => store.nickName,
+    name: store => store.name,
   },
   mutations: {
-    login(state, payload) {
-      const { nickName, token } = payload;
+    login(state: IStore.State, payload: IStore.LoginSuccess) {
+      const { name, token } = payload;
       state.isLogin = true;
       state.token = token;
-      state.nickName = nickName;
+      state.name = name;
     },
-    logout(state){
+    logout(state: IStore.State){
       state.isLogin = false;
       state.token = '';
-      state.nickName = '';
+      state.name = '';
     },
   },
   actions: {
     async login(context, sendData) {
       try {
+        console.log(context)
         const { data } = await axios.post('/user/auth', sendData);
         context.commit('login', data);
         return true;
@@ -41,6 +43,7 @@ const UserStore: Module<any, any> = {
       try {
         const { token } = payload;
         const { data, status } = await axios.post(`/user/auth/${token}`);
+        console.log(data);
         if (status === 201) return true
       } catch (e) {
         return false;

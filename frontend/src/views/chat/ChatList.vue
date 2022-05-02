@@ -1,13 +1,18 @@
 <template>
   <section id="chat-container">
-
-
+    <chat-component ></chat-component>
   </section>
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
+import ChatComponent from "@/components/ChatComponent.vue";
 
+@Component({
+  components: {
+    ChatComponent
+  }
+})
 export default class ChatList extends Vue {
 
 }
