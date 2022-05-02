@@ -1,22 +1,25 @@
 <template>
-  <section id="login-container">
-
-    <article id="profile-box">
-      <div id="profile-img">
+  <main id="login-container">
+    <section id="profile-box">
+      <article id="profile-img">
         <img src="@/assets/profile.png" alt="profile" />
-      </div>
+      </article>
 
-      <div>
-        <label class="nickName" for="name"><small>닉네임을 입력해주세요.</small></label>
+      <article>
+        <label class="nickName" for="name" v-if="enterName">
+          <small>닉네임을 입력해주세요.</small>
+        </label>
+        <label class="nickName" for="name" v-else>
+          <small>{{ this.existsName }}</small>
+        </label>
         <input type="text" class="name" id="name" v-model="name"/>
-      </div>
+      </article>
 
-      <div>
+      <article>
         <button id="login-btn" @click="login">go</button>
-      </div>
-    </article>
-
-  </section>
+      </article>
+    </section>
+  </main>
 </template>
 
 <script lang="ts">
@@ -25,14 +28,34 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class LoginComponent extends Vue {
   name = '';
+  enterName = true
+  test = '';
+  msg: string;
+
+  constructor() {
+    super();
+    this.msg = '';
+  }
 
   async login() {
     const sendData = {
       name: this.name,
     };
     const result = await this.$store.dispatch('userStore/login', sendData);
-    if (result) await this.$router.push('/chat');
-    else await this.$router.go(0);
+    console.log(result)
+    if (result) {
+      await this.$router.push('/chat');
+    }
+    this.enterName = false;
+    this.msg = '존재하는 이름 입니다.';
+    this.existsName = this.msg;
+  }
+
+  private set existsName(msg: string) {
+    this.test = msg
+  }
+  private get existsName(): string {
+    return this.test;
   }
 
 

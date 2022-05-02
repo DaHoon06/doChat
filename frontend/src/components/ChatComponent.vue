@@ -1,18 +1,22 @@
 <template>
-  <div>
+  <main id="user-list">
 
-    <small>{{ this.name }} 님</small>
-    <div id="user-list">
-      <div id="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
+    <section>
+      <small>{{ this.name }} 님</small>
+    </section>
+
+    <section id="user-list-section">
+      <article id="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
         <span class="list-items">
-          <a>{{ lists.name }}</a>
+          <a @click="doChat(lists.name)">{{ lists.name }}</a>
         </span>
-        <span v-if="lists.connecting" id="isLogin" class="list-items"></span>
-        <span v-else id="isLogout" class="list-items"></span>
-      </div>
-    </div>
+        <span v-if="lists.connecting" id="isLogin" class="list-items blinking"></span>
+        <span v-else id="isLogout" class="list-items blinking"></span>
 
-  </div>
+      </article>
+    </section>
+
+  </main>
 </template>
 
 <script lang="ts">
@@ -43,31 +47,69 @@ export default class ChatComponent extends Vue {
     this.name = this.$store.getters['userStore/name'];
     const{ data } = await this.axios.get('/user/chatLists');
     this.userLists = data;
-    console.log(data);
+  }
+  //TODO: 현재 접속한 아이디와 선택한 아이디 필요
+  async doChat(selectedName: string) {
+    const options = 'top=100, left=650, width=600, height=700, status=no, menubar=no, toolbar=no, resizable=no';
+    window.open('TEST','chat',options)
+    console.log(selectedName, this.name)
   }
 
 }
 </script>
 
 <style scoped>
+
+#user-list-section {
+  margin-top: 2em;
+}
 #user-list {
   display: flex;
   flex-direction: column;
 }
-
 #user-list-items {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
 }
 
-#isLogin::after {
-  content: '🟢';
+#isLogin {
+  border: 1px solid #04b404;
+  box-shadow: 1px 1px 1px 1px #016201;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #0daf03;
+}
+#isLogout {
+  border: 1px solid #ce0303;
+  box-shadow: 1px 1px 1px 1px #810404;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #d50606;
 }
 
-#isLogout::after {
-  content: '🔴';
+.blinking {
+  -webkit-animation: blink 3s ease-in-out infinite alternate;
+  -moz-animation: blink 3s ease-in-out infinite alternate;
+  animation: blink 3s ease-in-out infinite alternate;
 }
+@-webkit-keyframes blink {
+  40% {opacity:0.8;}
+  100% {opacity:1;}
+}
+@-moz-keyframes blink {
+  40% {opacity:0.8;}
+  100% {opacity:1;}
+}
+@keyframes blink {
+  40% {opacity:0.8;}
+  100% {opacity:1;}
+}
+
+
 
 .list-items {
   margin: 0.5em 0.5em;

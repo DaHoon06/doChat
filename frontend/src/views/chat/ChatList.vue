@@ -1,7 +1,5 @@
 <template>
-  <section id="chat-container">
-    <chat-component ></chat-component>
-  </section>
+  <chat-component id="chat-container" />
 </template>
 
 <script lang="ts">

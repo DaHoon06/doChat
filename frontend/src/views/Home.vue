@@ -1,7 +1,5 @@
 <template>
-  <main>
-    <login-component></login-component>
-  </main>
+  <login-component />
 </template>
 
 <script lang="ts">
