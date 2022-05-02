@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { UserService } from './user.service';
 import { JwtPayload } from '../auth/jwt.config';
 
@@ -16,8 +16,13 @@ export class UserController {
     return await this.userService.validationToken(token);
   }
 
-  @Get('chatLists')
+  @Get('/chatLists')
   async getChatLists() {
     return await this.userService.getChatLists();
+  }
+
+  @Patch('/logout')
+  async logout(@Body('name') name: JwtPayload) {
+    return await this.userService.logout(name);
   }
 }

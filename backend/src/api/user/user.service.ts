@@ -11,7 +11,7 @@ export class UserService {
   ) {}
 
   async login(login: JwtPayload) {
-    const result = await this.findByNickName(login);
+    const result = await this.findByName(login);
     console.log(result);
     return this.authService.createToken(login);
   }
@@ -20,11 +20,15 @@ export class UserService {
     return this.authService.decodeToken(token);
   }
 
-  async findByNickName(login: JwtPayload) {
+  async findByName(login: JwtPayload) {
     await this.userRepository.findByName(login);
   }
 
   async getChatLists() {
     return await this.userRepository.getChatLists();
+  }
+
+  async logout(name: JwtPayload) {
+    await this.userRepository.logout(name);
   }
 }

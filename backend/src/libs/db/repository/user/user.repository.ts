@@ -16,4 +16,16 @@ export class UserRepository {
   async getChatLists() {
     return this.userModel.find();
   }
+
+  async logout(name: JwtPayload) {
+    return this.userModel.findOneAndUpdate(
+      { name: name },
+      {
+        $set: {
+          connecting: false,
+          updatedAt: new Date(),
+        },
+      },
+    );
+  }
 }
