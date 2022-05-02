@@ -1,8 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import store from '@/store';
 
-const instance = axios.create({
-  baseURL: '/api',
+const baseURL = process.env.NODE_ENV === 'dev' ? '/api' : '/api'
+
+const instance: AxiosInstance = axios.create({
+  baseURL,
   headers: {
     'Content-Type': 'application/json'
   },
@@ -10,10 +12,10 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(config => {
-  if (store) {
-    const token = store.getters['login/token'];
-    if (token) config.headers['Authorization'] = `Bearer ${token}`;
-  }
+  // if (store) {
+  //   const token = store.getters['login/token'];
+  //   if (token) config.headers['Authorization'] = `Bearer ${token}`;
+  // }
   return config
 })
 
@@ -26,4 +28,4 @@ instance.interceptors.response.use(response => {
   return response;
 })
 
-export default instance;
+export const ins = instance;

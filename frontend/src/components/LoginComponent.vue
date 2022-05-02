@@ -8,7 +8,7 @@
 
       <div>
         <label class="nickName" for="nickName"><small>닉네임을 입력해주세요.</small></label>
-        <input type="text" id="nickName" v-model="nickName"/>
+        <input type="text" class="nickName" id="nickName" v-model="nickName"/>
       </div>
 
       <div>
@@ -29,9 +29,10 @@ export default class LoginComponent extends Vue {
   async login() {
     const sendData = {
       nickName: this.nickName,
-
     };
-    await this.$store.dispatch('UserStore/login', sendData)
+    const result = await this.$store.dispatch('userStore/login', sendData);
+    if (result) await this.$router.push('/chat');
+    else await this.$router.go(0);
   }
 
 
@@ -95,7 +96,12 @@ input {
 }
 
 .nickName {
+  display: block;
   font-weight: 500;
   font-size: 14px;
 }
+.nickName:nth-child(2) {
+  margin: auto;
+}
+
 </style>
