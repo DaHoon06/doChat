@@ -5,13 +5,16 @@ export type UserDocument = User & Document;
 
 @Schema({ collection: 'doChat_user', versionKey: false })
 export class User {
-  @Prop()
-  nickName: string;
+  @Prop({ required: true })
+  name: string;
 
-  @Prop()
+  @Prop({ required: true, default: true })
+  connecting: boolean;
+
+  @Prop({ required: true, default: new Date() })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ required: true, default: new Date() })
   updatedAt: Date;
 }
 

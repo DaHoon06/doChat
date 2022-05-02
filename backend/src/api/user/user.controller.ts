@@ -15,4 +15,9 @@ export class UserController {
   async validationToken(@Param('token') token: string) {
     return await this.userService.validationToken(token);
   }
+
+  @Get('chatLists')
+  async getChatLists() {
+    return await this.userService.getChatLists();
+  }
 }

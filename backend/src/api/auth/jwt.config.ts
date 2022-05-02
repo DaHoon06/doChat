@@ -3,5 +3,5 @@ export const jwtConfig = {
 };
 
 export class JwtPayload {
-  nickName: string;
+  name: string;
 }
