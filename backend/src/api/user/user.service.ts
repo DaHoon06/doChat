@@ -6,7 +6,11 @@ import { JwtPayload } from '../auth/jwt.config';
 export class UserService {
   constructor(private readonly authService: AuthService) {}
 
-  async login(info: JwtPayload) {
-    return this.authService.createToken(info);
+  async login(login: JwtPayload) {
+    return this.authService.createToken(login);
+  }
+
+  async validationToken(token: string) {
+    return this.authService.decodeToken(token);
   }
 }

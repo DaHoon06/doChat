@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtPayload } from '../auth/jwt.config';
 
@@ -7,7 +7,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/auth')
-  async login(@Body() info: JwtPayload) {
-    return await this.userService.login(info);
+  async login(@Body() login: JwtPayload) {
+    return await this.userService.login(login);
+  }
+
+  @Post('/auth/:token')
+  async validationToken(@Param('token') token: string) {
+    return await this.userService.validationToken(token);
   }
 }
