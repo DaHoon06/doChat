@@ -6,10 +6,10 @@ import { RouterModule, Routes } from 'nest-router';
 import { AuthModule } from './api/auth/auth.module';
 
 const routes: Routes = [
-  {
-    path: '/auth',
-    module: AuthModule,
-  },
+  // {
+  //   path: '/auth',
+  //   module: AuthModule,
+  // },
 ];
 
 @Module({
