@@ -31,11 +31,24 @@ const UserStore: Module<IStore.State, IStore.State> = {
     async login(context, sendData) {
       try {
         const { data } = await axios.post('/user/auth', sendData);
-        console.log(data,'TESTSET')
         context.commit('login', data);
         return true;
       } catch (e) {
         console.log(e);
+        return false;
+      }
+    },
+    async logout(context, payload) {
+      try {
+        const sendData = {
+          name: payload
+        }
+        const result = await axios.patch('/user/logout', sendData);
+        console.log(result)
+        if (result) context.commit('logout');
+
+        return true
+      } catch (e) {
         return false;
       }
     },

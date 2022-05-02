@@ -1,22 +1,17 @@
 <template>
-  <main id="user-list">
+  <section id="user-list">
 
-    <section>
-      <small>{{ this.name }} 님</small>
-    </section>
-
-    <section id="user-list-section">
-      <article id="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
+    <article id="user-list-section">
+      <div id="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
         <span class="list-items">
           <a @click="doChat(lists.name)">{{ lists.name }}</a>
         </span>
         <span v-if="lists.connecting" id="isLogin" class="list-items blinking"></span>
         <span v-else id="isLogout" class="list-items blinking"></span>
+      </div>
+    </article>
 
-      </article>
-    </section>
-
-  </main>
+  </section>
 </template>
 
 <script lang="ts">
@@ -31,12 +26,12 @@ export interface IUserLists {
 
 @Component
 export default class ChatComponent extends Vue {
-  name: string;
+
   userLists: IUserLists[];
 
   constructor() {
     super();
-    this.name = '';
+
     this.userLists = [];
   }
   async created() {
@@ -44,7 +39,6 @@ export default class ChatComponent extends Vue {
   }
 
   async load() {
-    this.name = this.$store.getters['userStore/name'];
     const{ data } = await this.axios.get('/user/chatLists');
     this.userLists = data;
   }
@@ -52,7 +46,7 @@ export default class ChatComponent extends Vue {
   async doChat(selectedName: string) {
     const options = 'top=100, left=650, width=600, height=700, status=no, menubar=no, toolbar=no, resizable=no';
     window.open('TEST','chat',options)
-    console.log(selectedName, this.name)
+
   }
 
 }

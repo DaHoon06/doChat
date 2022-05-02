@@ -1,13 +1,18 @@
 <template>
-  <chat-component id="chat-container" />
+  <main id="chat-container">
+    <navigation-component />
+    <chat-component  />
+  </main>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ChatComponent from "@/components/ChatComponent.vue";
+import NavigationComponent from "@/components/common/NavigationComponent.vue";
 
 @Component({
   components: {
+    NavigationComponent,
     ChatComponent
   }
 })

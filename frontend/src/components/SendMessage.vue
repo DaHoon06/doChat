@@ -1,0 +1,16 @@
+<template>
+
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+@Component
+export default class SendMessage extends Vue {
+
+}
+</script>
+
+<style scoped>
+
+</style>
