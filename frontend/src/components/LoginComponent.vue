@@ -1,15 +1,16 @@
 <template>
   <section id="login-container">
 
-    <article>
+    <article id="profile-box">
       <div id="profile-img">
-        <img src="@/assets/img.png" alt="profile" />
+        <img src="@/assets/profile.png" alt="profile" />
       </div>
 
       <div>
-        <label><small>닉네임을 입력해주세요.</small></label>
-        <input type="text"  v-model="nickName"/>
+        <label class="nickName" for="nickName"><small>닉네임을 입력해주세요.</small></label>
+        <input type="text" id="nickName" v-model="nickName"/>
       </div>
+
       <div>
         <button id="login-btn" @click="login">go</button>
       </div>
@@ -62,7 +63,7 @@ input {
 }
 
 #login-btn {
-  border: 1px solid #d0d0d0;
+  border: 2px solid #cfcff4;
   color: #757575;
   background: #cfcff4;
   font-weight: 400;
@@ -77,16 +78,24 @@ input {
   background: #c5c5ee;
   color: #f5f5f5;
 }
-
+#profile-box {
+  padding-top: 5em;
+}
 #profile-img {
-  margin: auto;
-  background: gray;
-  border: 1px solid #f5f5f5;
+  margin: 3em auto;
+  background: #C4C4C4;
+  border: 1px solid #cfcff4;
   border-radius: 45px;
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
 }
 #profile-img > img {
-  width: 30px;
+  margin-top: 0.7em;
+  width: 3em;
+}
+
+.nickName {
+  font-weight: 500;
+  font-size: 14px;
 }
 </style>
