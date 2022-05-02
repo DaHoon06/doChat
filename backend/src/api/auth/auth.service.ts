@@ -11,12 +11,15 @@ export class AuthService {
     // return this.jwtService.decode(token.replace('Bearer', '').trim());
   }
 
-  createToken(data: JwtPayload): string {
-    const { name } = data;
+  createToken(data: JwtPayload) {
+    const { nickName } = data;
     const payload = {
-      name,
+      nickName,
     };
-
-    return this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload);
+    return {
+      nickName: nickName,
+      token: token,
+    };
   }
 }

@@ -1,24 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RouterModule, Routes } from 'nest-router';
-import { AuthModule } from './api/auth/auth.module';
-
-const routes: Routes = [
-  // {
-  //   path: '/auth',
-  //   module: AuthModule,
-  // },
-];
+import { ConfigModule } from '@nestjs/config';
+import { RouterModule } from 'nest-router';
+import { MODULES, ROUTES } from './module.router';
 
 @Module({
   imports: [
-    RouterModule.forRoutes(routes),
+    RouterModule.forRoutes(ROUTES),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV == 'dev' ? '.env.dev' : '.env',
     }),
+    ...MODULES,
   ],
   controllers: [AppController],
   providers: [AppService],

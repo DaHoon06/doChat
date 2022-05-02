@@ -1,13 +1,13 @@
-import { Controller, Post } from '@nestjs/common';
-import UserService from './user.service';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { UserService } from './user.service';
 import { JwtPayload } from '../auth/jwt.config';
 
 @Controller()
-export default class UserController {
+export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async login(info: JwtPayload) {
-    await this.userService.login(info);
+  @Post('/auth')
+  async login(@Body() info: JwtPayload) {
+    return await this.userService.login(info);
   }
 }
