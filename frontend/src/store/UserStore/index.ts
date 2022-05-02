@@ -37,6 +37,15 @@ const UserStore: Module<any, any> = {
         return false;
       }
     },
+    async verify(context, payload) {
+      try {
+        const { token } = payload;
+        const { data, status } = await axios.post(`/user/auth/${token}`);
+        if (status === 201) return true
+      } catch (e) {
+        return false;
+      }
+    }
 
   },
 }
