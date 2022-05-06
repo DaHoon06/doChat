@@ -43,10 +43,10 @@ export default class ChatComponent extends Vue {
     this.userLists = data;
   }
   //TODO: 현재 접속한 아이디와 선택한 아이디 필요
-  async doChat(selectedName: string) {
+  async doChat() {
+    const route = this.$router.resolve({ path: '/chat/do' });
     const options = 'top=100, left=650, width=600, height=700, status=no, menubar=no, toolbar=no, resizable=no';
-    window.open('TEST','chat',options)
-
+    window.open(route.href,'test', options)
   }
 
 }

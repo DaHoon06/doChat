@@ -12,7 +12,6 @@ export class UserService {
 
   async login(login: JwtPayload) {
     const result = await this.findByName(login);
-    console.log(result);
     return this.authService.createToken(login);
   }
 

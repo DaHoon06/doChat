@@ -19,7 +19,16 @@ const routes: Array<RouteConfig> = [
     path:'/chat',
     name: 'chat',
     component: () => import('@/views/chat/ChatList.vue'),
+    // children: [
+    //   { path: 'test',name: 'test', component: () => import('@/views/chat/ChattingRoom.vue') }
+    // ],
+  },
+  {
+    path:'/chat/do',
+    component: () => import('@/views/chat/ChattingRoom.vue')
   }
+
+
 ]
 
 const router = new VueRouter({
@@ -32,7 +41,7 @@ router.beforeEach(async (to, from, next) => {
   try {
     const { meta } = to;
     const { unauthorized } = meta || { unauthorized: true };
-
+    console.log(to)
     if (unauthorized) return next();
 
     const token = store.getters['userStore/token'];

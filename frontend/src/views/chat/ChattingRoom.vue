@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main id="chat-room-container">
     <navigation-component />
     <send-message />
   </main>
@@ -17,10 +17,23 @@ import SendMessage from "@/components/SendMessage.vue";
   }
 })
 export default class ChattingRoom extends Vue {
-
+  created() {
+    console.log('TEST');
+  }
 }
 </script>
 
 <style scoped>
-
+#chat-room-container {
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 1px 1px 1px #c7c7c7;
+  width: 90%;
+  height: 75vh;
+  max-height: 500px;
+  position: absolute;
+  top: 10%;
+  left: 1.9em;
+}
 </style>
