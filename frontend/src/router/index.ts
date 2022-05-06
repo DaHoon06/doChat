@@ -19,9 +19,6 @@ const routes: Array<RouteConfig> = [
     path:'/chat',
     name: 'chat',
     component: () => import('@/views/chat/ChatList.vue'),
-    // children: [
-    //   { path: 'test',name: 'test', component: () => import('@/views/chat/ChattingRoom.vue') }
-    // ],
   },
   {
     path:'/chat/do',

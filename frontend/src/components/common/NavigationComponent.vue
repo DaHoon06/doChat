@@ -1,7 +1,12 @@
 <template>
-  <nav>
-    <small><strong>{{ this.name }} 님</strong></small>
-    <button @click="logout">logout</button>
+  <nav id="header-container">
+    <div>
+      <small><strong>{{ this.name }} 님</strong></small>
+    </div>
+    <div>
+      <button @click="logout">logout</button>
+    </div>
+    <hr/>
   </nav>
 </template>
 
@@ -28,5 +33,7 @@ export default class NavigationComponent extends Vue{
 </script>
 
 <style scoped>
+#header-container {
 
+}
 </style>
