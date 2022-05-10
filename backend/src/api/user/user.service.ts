@@ -11,7 +11,7 @@ export class UserService {
   ) {}
 
   async login(login: JwtPayload) {
-    const result = await this.findByName(login);
+    await this.findByName(login);
     return this.authService.createToken(login);
   }
 
@@ -20,7 +20,7 @@ export class UserService {
   }
 
   async findByName(login: JwtPayload) {
-    await this.userRepository.findByName(login);
+    return await this.userRepository.findByName(login);
   }
 
   async getChatLists() {
