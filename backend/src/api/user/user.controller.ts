@@ -8,6 +8,7 @@ export class UserController {
 
   @Post('/auth')
   async login(@Body() login: JwtPayload) {
+    console.log(login);
     return await this.userService.login(login);
   }
 
