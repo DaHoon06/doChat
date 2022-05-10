@@ -1,10 +1,11 @@
 import Vue from "vue";
+import { Socket } from "socket.io-client";
 
 declare module 'socket.io-client';
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $socket: any;
+    $socket: Socket;
 
   }
 }

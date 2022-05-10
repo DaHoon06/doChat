@@ -44,7 +44,6 @@ const UserStore: Module<IStore.State, IStore.State> = {
           name: payload
         }
         const result = await axios.patch('/user/logout', sendData);
-        console.log(result)
         if (result) context.commit('logout');
 
         return true

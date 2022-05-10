@@ -2,10 +2,8 @@
   <div id="chat-room-wrapper">
 
     <div id="message-textarea">
-      <p>{{ this.targetName }} 님의 진실의 방으로</p>
-      메세지 영역
-      <p>{{ this.targetName }} 님의 진실의 방으로</p>
-
+      <p> {{this.nameTest}} 님의 진실의 방으로</p>
+      {{ this.roomNameTest }}
     </div>
     <div id="message-input-area">
       <input type="text" id="message-input" placeholder="메세지를 입력해 주세요." />
@@ -20,15 +18,54 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class SendMessage extends Vue {
-  message = '';
+  messageTest = '';
   textarea = '';
   targetName = this.$route.params.name;
 
-  created() {
-    this.getUserInfo();
+  nameTest = '';
+  roomNameTest = '';
+
+  myInfo: {
+    nickName: string,
+    id: string,
+    room: {
+      roomName: string
+    },
+  }
+
+  constructor() {
+    super();
+    this.myInfo = {
+      nickName: '',
+      id: '',
+      room: {
+        roomName: '',
+      },
+    }
+  }
+
+  async created() {
+    this.initRoom();
+    // this.getUserInfo();
     this.$socket.on('chat', (data: any) => {
       this.textarea += data.message + "\n";
     });
+  }
+
+  private initRoom() {
+    this.$socket.on('connect', () => {
+      console.log('ChatRoom Connected!!!');
+      const nickName = localStorage.getItem('nickName');
+      this.$socket.emit('setInit', { nickName }, (response: any) => {
+        this.myInfo.nickName = response.nickName;
+        this.myInfo.id = this.$socket.id;
+        this.myInfo.room = response.room;
+        this.nameTest = this.myInfo.nickName;
+        this.roomNameTest = this.myInfo.room.roomName;
+      })
+    });
+    this.$socket.emit('getChatRoomList', null);
+    this.sendMessage();
   }
 
   private async getUserInfo() {
@@ -41,11 +78,17 @@ export default class SendMessage extends Vue {
 
   private sendMessage() {
 
-    this.$socket.emit('chat', {
-      message: this.message
+    this.$socket.on('getMessage', ({ id, nickName, message }: { id: string, nickName: string, message: string }) => {
+      console.log({ id, nickName, message })
     });
-    this.textarea += this.message + "\n";
-    this.message = '';
+
+    // this.$socket.connect();
+    //
+    // this.$socket.emit('message', {
+    //   message: this.message
+    // });
+    // this.textarea += this.message + "\n";
+    // this.message = '';
   }
 }
 </script>
