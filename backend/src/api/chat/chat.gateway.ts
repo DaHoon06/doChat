@@ -8,7 +8,7 @@ import {
 import { ChatRoomService } from './chatRoom.service';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(3000, {
+@WebSocketGateway(9001, {
   cors: {
     origin: 'http://localhost:8080',
   },

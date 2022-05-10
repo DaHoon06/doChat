@@ -7,7 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.setGlobalPrefix('/api');
-  app.useWebSocketAdapter(new SocketIoAdapter(app));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,6 +15,8 @@ async function bootstrap() {
     }),
   );
   await app.listen(3000);
+  app.useWebSocketAdapter(new SocketIoAdapter(app));
+
 }
 
 bootstrap();
