@@ -46,10 +46,6 @@ export default class SendMessage extends Vue {
 
   async created() {
     this.initRoom();
-    // this.getUserInfo();
-    this.$socket.on('chat', (data: any) => {
-      this.textarea += data.message + "\n";
-    });
   }
 
   private initRoom() {

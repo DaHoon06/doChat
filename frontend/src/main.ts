@@ -6,7 +6,7 @@ import { ins as axios } from "@/utils/axios";
 import VueAxios from "vue-axios";
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
+const socket = io('http://localhost:9001');
 
 Vue.config.productionTip = false;
 Vue.prototype.$socket = socket;
