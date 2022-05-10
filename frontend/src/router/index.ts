@@ -21,7 +21,8 @@ const routes: Array<RouteConfig> = [
     component: () => import('@/views/chat/ChatList.vue'),
   },
   {
-    path:'/chat/do',
+    path:'/chat/:name',
+    name: 'chatRoom',
     component: () => import('@/views/chat/ChattingRoom.vue')
   }
 
@@ -38,7 +39,6 @@ router.beforeEach(async (to, from, next) => {
   try {
     const { meta } = to;
     const { unauthorized } = meta || { unauthorized: true };
-    console.log(to)
     if (unauthorized) return next();
 
     const token = store.getters['userStore/token'];

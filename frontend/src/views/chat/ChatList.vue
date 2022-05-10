@@ -27,12 +27,10 @@ export default class ChatList extends Vue {
   background: white;
   border-radius: 20px;
   box-shadow: 0 1px 1px 1px #c7c7c7;
-  width: 25%;
+  width: 50vw;
   height: 75vh;
   max-height: 500px;
-  position: absolute;
-  top: 10%;
-  left: 40%;
+  margin: 5em auto;
 }
 
 

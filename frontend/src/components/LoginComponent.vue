@@ -42,13 +42,14 @@ export default class LoginComponent extends Vue {
       name: this.name,
     };
     const result = await this.$store.dispatch('userStore/login', sendData);
-    console.log(result)
+
     if (result) {
       await this.$router.push('/chat');
+    } else {
+      this.enterName = false;
+      this.msg = '존재하는 이름 입니다.';
+      this.existsName = this.msg;
     }
-    this.enterName = false;
-    this.msg = '존재하는 이름 입니다.';
-    this.existsName = this.msg;
   }
 
   private set existsName(msg: string) {
@@ -78,12 +79,10 @@ input {
   background: white;
   border-radius: 20px;
   box-shadow: 0 1px 1px 1px #c7c7c7;
-  width: 25%;
+  width: 50vw;
   height: 75vh;
   max-height: 500px;
-  position: absolute;
-  top: 10%;
-  left: 40%;
+  margin: 5em auto;
 }
 
 #login-btn {

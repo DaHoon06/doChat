@@ -10,9 +10,17 @@ export class UserRepository {
 
   async findByName(login: JwtPayload) {
     const result = await this.userModel.findOne(login);
-    if (!result) await new this.userModel(login).save();
-    else return false;
+    if (!result) {
+      await new this.userModel(login).save();
+      return { result: true };
+    } else {
+      const data = await this.userModel.findOneAndUpdate(login, {
+        $set: { connecting: true },
+      });
+      return { result: false, userInfo: data };
+    }
   }
+
   async getChatLists() {
     return this.userModel.find();
   }

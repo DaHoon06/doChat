@@ -1,8 +1,8 @@
 <template>
-  <main id="chat-room-container">
+  <div id="chat-room-container">
     <navigation-component />
     <send-message />
-  </main>
+  </div>
 </template>
 
 <script lang="ts">
@@ -29,11 +29,10 @@ export default class ChattingRoom extends Vue {
   background: white;
   border-radius: 20px;
   box-shadow: 0 1px 1px 1px #c7c7c7;
-  width: 90%;
+  width: 90vw;
   height: 75vh;
   max-height: 500px;
-  position: absolute;
-  top: 10%;
-  left: 1.9em;
+  margin: 5em auto auto auto;
 }
+
 </style>
