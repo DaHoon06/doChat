@@ -51,49 +51,20 @@ export default class ChatComponent extends Vue {
   }
   async created() {
     await this.load();
-    await this.initRoom();
-  }
-
-  private async initRoom() {
-    console.log('챗 시작 준비')
-    this.$socket.on('connect', () => {
-      console.log('ChatRoom Connected!!!');
-
-      const nickName = this.userName;
-
-      // 챗 초기 설정
-      this.$socket.emit('setInit', { nickName }, (response: any) => {
-        this.myInfo.nickName = response.nickName;
-        this.myInfo.id = this.$socket.id;
-        this.myInfo.room = response.room;
-        this.nameTest = this.myInfo.nickName;
-        this.roomNameTest = this.myInfo.room.roomName;
-        console.log(this.myInfo)
-      })
-    });
-    // 채팅방 조회
-
-    this.$socket.emit('getChatRoomList', null);
-    this.$socket.on('getChatRoomList', (data) => {
-      console.log('채팅방 리스트 조회');
-      console.log(data);
-    })
   }
 
   async load() {
     const{ data } = await this.axios.get('/user/chatLists');
     this.userLists = data;
   }
-  //TODO: 현재 접속한 아이디와 선택한 아이디 필요
+
   async doChat(name: string) {
-    this.$socket.emit('enterChatRoom',(response: any) => {
-      const data = response.data;
-      console.log(data);
-    })
     const route = this.$router.resolve({ path: `/chat/${name}` });
     const options = 'top=100, left=650, width=600, height=700, status=no, menubar=no, toolbar=no, resizable=no';
     window.open(route.href,'chatRoom', options)
   }
+
+
 
 }
 </script>
