@@ -31,6 +31,7 @@ export default class ChatList extends Vue {
   height: 75vh;
   max-height: 500px;
   margin: 5em auto;
+  overflow-y: auto;
 }
 
 

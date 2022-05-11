@@ -2,7 +2,7 @@
   <section id="user-list">
 
     <article id="user-list-section">
-      <div id="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
+      <div class="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
         <span class="list-items">
           <a @click="doChat(lists.name)">{{ lists.name }}</a>
         </span>
@@ -78,11 +78,15 @@ export default class ChatComponent extends Vue {
   display: flex;
   flex-direction: column;
 }
-#user-list-items {
+.user-list-items:first-child {
+  border-top: 1px dotted #afafaf;
+}
+.user-list-items {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  border-bottom: 1px dotted #afafaf;
+  margin-top: 0.3em;
 }
 
 #isLogin {
