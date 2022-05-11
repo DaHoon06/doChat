@@ -64,6 +64,12 @@ export default class ChatComponent extends Vue {
     window.open(route.href,'chatRoom', options)
   }
 
+  async updated() {
+
+    setTimeout(async () => {
+      await this.load();
+    },300)
+  }
 
 
 }
