@@ -17,9 +17,7 @@ import SendMessage from "@/components/SendMessage.vue";
   }
 })
 export default class ChattingRoom extends Vue {
-  created() {
-    console.log('TEST');
-  }
+  // created() {}
 }
 </script>
 

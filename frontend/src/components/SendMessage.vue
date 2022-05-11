@@ -2,12 +2,15 @@
   <div id="chat-room-wrapper">
 
     <div id="message-textarea">
-      <p> {{this.nameTest}} 님의 진실의 방으로</p>
-      {{ this.roomNameTest }}
+      <p> {{this.nameTest}} 진실의 방으로</p>
+      <p>{{ this.roomNameTest }}</p>
+     <ul>
+       <li v-for="(text, index) of this.textAreaArr" :key="index">{{ text }}</li>
+     </ul>
     </div>
     <div id="message-input-area">
-      <input type="text" id="message-input" placeholder="메세지를 입력해 주세요." />
-      <button id="send-message-btn" @click="sendMessage">Send</button>
+      <input type="text" id="message-input" v-model="message" placeholder="메세지를 입력해 주세요." />
+      <button id="send-message-btn" @click="sendMessage" >Send</button>
     </div>
 
   </div>
@@ -18,8 +21,10 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class SendMessage extends Vue {
-  messageTest = '';
+  message = '';
   textarea = '';
+  textAreaArr: string[];
+
   targetName = this.$route.params.name;
 
   nameTest = '';
@@ -42,26 +47,23 @@ export default class SendMessage extends Vue {
         roomName: '',
       },
     }
+    this.textAreaArr = [];
   }
 
-  async created() {
+  created() {
     this.initRoom();
   }
 
   private initRoom() {
-    this.$socket.on('connect', () => {
-      console.log('ChatRoom Connected!!!');
-      const nickName = localStorage.getItem('nickName');
-      this.$socket.emit('setInit', { nickName }, (response: any) => {
-        this.myInfo.nickName = response.nickName;
-        this.myInfo.id = this.$socket.id;
-        this.myInfo.room = response.room;
-        this.nameTest = this.myInfo.nickName;
-        this.roomNameTest = this.myInfo.room.roomName;
-      })
-    });
-    this.$socket.emit('getChatRoomList', null);
-    this.sendMessage();
+    const nickName = this.targetName;
+    this.$socket.emit('setInit', { nickName }, (response: any) => {
+      this.myInfo.nickName = response.nickName;
+      this.myInfo.id = this.$socket.id;
+      this.myInfo.room = response.room;
+      this.nameTest = this.myInfo.nickName;
+      this.roomNameTest = this.myInfo.room.roomName;
+      console.log(this.myInfo)
+    })
   }
 
   private async getUserInfo() {
@@ -73,18 +75,11 @@ export default class SendMessage extends Vue {
   }
 
   private sendMessage() {
-
-    this.$socket.on('getMessage', ({ id, nickName, message }: { id: string, nickName: string, message: string }) => {
-      console.log({ id, nickName, message })
+    this.$socket.emit('sendMessage', this.message);
+    this.$socket.on('getMessage', (data) => {
+      this.textarea = data.message;
+      this.textAreaArr.push(this.textarea);
     });
-
-    // this.$socket.connect();
-    //
-    // this.$socket.emit('message', {
-    //   message: this.message
-    // });
-    // this.textarea += this.message + "\n";
-    // this.message = '';
   }
 }
 </script>
