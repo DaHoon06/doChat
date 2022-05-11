@@ -5,11 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RouterModule } from 'nest-router';
 import { MODULES, ROUTES } from './module.router';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventModule } from './api/socket/event.module';
+import { ChatModule } from './api/chat/chat.module';
 
 @Module({
   imports: [
-    EventModule,
+    ChatModule,
     RouterModule.forRoutes(ROUTES),
     ConfigModule.forRoot({
       isGlobal: true,

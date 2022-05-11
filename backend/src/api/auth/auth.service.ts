@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt.config';
 import { jwtConfig } from './jwt.config';
+import { UserLoginDto } from "../user/dto/user.dto";
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
@@ -11,7 +12,7 @@ export class AuthService {
     // return this.jwtService.decode(token.replace('Bearer', '').trim());
   }
 
-  createToken(data: JwtPayload) {
+  createToken(data: UserLoginDto) {
     const { name } = data;
     const payload = {
       name,

@@ -3,12 +3,13 @@ import { JwtPayload } from '../../../../api/auth/jwt.config';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../../schema/user/user.schema';
 import { Model } from 'mongoose';
+import { UserLoginDto } from '../../../../api/user/dto/user.dto';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findByName(login: JwtPayload) {
+  async findByName(login: UserLoginDto) {
     const result = await this.userModel.findOne(login);
     if (!result) {
       await new this.userModel(login).save();
@@ -25,7 +26,7 @@ export class UserRepository {
     return this.userModel.find();
   }
 
-  async logout(name: JwtPayload) {
+  async logout(name: UserLoginDto) {
     return this.userModel.findOneAndUpdate(
       { name: name },
       {

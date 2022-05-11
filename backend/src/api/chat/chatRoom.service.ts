@@ -5,12 +5,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ChatRoomService {
-  private chatRoomList: Record<string, chatRoomListDTO>;
+  private readonly chatRoomList: Record<string, chatRoomListDTO>;
   constructor() {
     this.chatRoomList = {
       'room:lobby': {
         roomId: 'room:lobby',
-        roomName: '로비',
+        roomName: '채팅방',
         cheifId: null,
       },
     };

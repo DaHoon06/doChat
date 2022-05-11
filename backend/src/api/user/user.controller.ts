@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtPayload } from '../auth/jwt.config';
+import { UserLoginDto } from './dto/user.dto';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/auth')
-  async login(@Body() login: JwtPayload) {
-    console.log(login);
-    return await this.userService.login(login);
+  async login(@Body() name: any) {
+    return await this.userService.login(name);
   }
 
   @Post('/auth/:token')
@@ -23,7 +23,7 @@ export class UserController {
   }
 
   @Patch('/logout')
-  async logout(@Body('name') name: JwtPayload) {
+  async logout(@Body('name') name: UserLoginDto) {
     return await this.userService.logout(name);
   }
 }

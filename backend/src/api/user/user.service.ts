@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { JwtPayload } from '../auth/jwt.config';
 import { UserRepository } from '../../libs/db/repository/user/user.repository';
+import { UserLoginDto } from "./dto/user.dto";
 
 @Injectable()
 export class UserService {
@@ -10,7 +11,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async login(login: JwtPayload) {
+  async login(login: UserLoginDto) {
     await this.findByName(login);
     return this.authService.createToken(login);
   }
@@ -19,7 +20,7 @@ export class UserService {
     return this.authService.decodeToken(token);
   }
 
-  async findByName(login: JwtPayload) {
+  async findByName(login: UserLoginDto) {
     return await this.userRepository.findByName(login);
   }
 
@@ -27,7 +28,7 @@ export class UserService {
     return await this.userRepository.getChatLists();
   }
 
-  async logout(name: JwtPayload) {
+  async logout(name: UserLoginDto) {
     await this.userRepository.logout(name);
   }
 }

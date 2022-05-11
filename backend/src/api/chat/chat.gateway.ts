@@ -20,6 +20,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   //소켓 연결시 유저목록에 추가
+  @SubscribeMessage('connect')
   public handleConnection(client: Socket): void {
     console.log('connected', client.id);
     client.leave(client.id);
@@ -28,6 +29,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   //소켓 연결 해제시 유저목록에서 제거
+  @SubscribeMessage('closedChat')
   public handleDisconnect(client: Socket): void {
     const { roomId } = client.data;
     if (
@@ -47,9 +49,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   sendMessage(client: Socket, message: string): void {
     const { roomId } = client.data;
+    console.log(message);
     client.to(roomId).emit('getMessage', {
       id: client.id,
-      nickname: client.data.nickname,
+      nickName: client.data.nickName,
       message,
     });
   }
@@ -57,22 +60,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //처음 접속시 닉네임 등 최초 설정
   @SubscribeMessage('setInit')
   setInit(client: Socket, data: any): any {
-    // 이미 최초 세팅이 되어있는 경우 패스
+    console.log({ client, data });
     if (client.data.isInit) {
       return;
     }
 
-    client.data.nickname = data.nickname
-      ? data.nickname
+    client.data.nickName = data.nickName
+      ? data.nickName
       : '낯선사람' + client.id;
 
     client.data.isInit = true;
 
     return {
-      nickname: client.data.nickname,
+      nickName: client.data.nickName,
       room: {
         roomId: 'room:lobby',
-        roomName: '로비',
+        roomName: '채팅방',
       },
     };
   }
@@ -83,15 +86,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const { roomId } = client.data;
     client.to(roomId).emit('getMessage', {
       id: null,
-      nickname: '안내',
-      message: `"${client.data.nickname}"님이 "${nickname}"으로 닉네임을 변경하셨습니다.`,
+      nickName: '안내',
+      message: `"${client.data.nickName}"님이 "${nickname}"으로 닉네임을 변경하셨습니다.`,
     });
-    client.data.nickname = nickname;
+    client.data.nickName = nickname;
   }
 
   //채팅방 목록 가져오기
   @SubscribeMessage('getChatRoomList')
   getChatRoomList(client: Socket, payload: any) {
+    console.log('채팅방 조회');
     client.emit('getChatRoomList', this.ChartRoomService.getChatRoomList());
   }
 
@@ -105,7 +109,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
       this.ChartRoomService.deleteChatRoom(client.data.roomId);
     }
-
     this.ChartRoomService.createChatRoom(client, roomName);
     return {
       roomId: client.data.roomId,
