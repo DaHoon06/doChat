@@ -2,37 +2,30 @@
   <div id="chat-room-wrapper">
     <div id="message-textarea">
 
-      <p class="notice-msg">"TEST" 님이 입장하셨습니다.</p>
+      <p class="notice-msg">{{this.notice}}</p>
 
-      <section class="user1-wrapper">
+      <section class="user1-wrapper" v-for="(contents, index) of this.textAreaArr2" :key="index">
         <article class="user1-container">
-          <main class="chat-main-section">
-            <span class="user1"></span>
-            <h5 class="user1-text">안녕하세요</h5>
+          <main class="chat-main-section-you">
+            <span class="user1">{{ contents.name }}</span>
+            <h5 class="user1-text">{{ contents.message }}</h5>
           </main>
         </article>
       </section>
 
 
-      <section class="user2-wrapper">
+      <section class="user2-wrapper" v-for="(contents, index) of this.textAreaArr1" :key="index">
         <article class="user2-container">
-          <main class="chat-main-section">
-            <h5 class="user2-text">안녕하세요</h5>
-            <span class="user2"></span>
+          <main class="chat-main-section-my">
+            <h5 class="user2-text">{{ contents.message }}</h5>
+            <span class="user2">{{ contents.name }}</span>
           </main>
         </article>
       </section>
 
-      <ul>
-        <li v-for="(text, index) of this.textAreaArr" :key="index">{{ text }}</li>
-      </ul>
-
-<!--      <p>{{ this.testMsg }}</p>-->
-
-      <p class="notice-msg">"TEST" 님이 퇴장하셨습니다.</p>
     </div>
     <div id="message-input-area">
-      <input type="text" id="message-input" v-model="message" placeholder="메세지를 입력해 주세요." />
+      <input type="text" id="message-input" v-model="message" @keyup.enter='sendMessage' placeholder="메세지를 입력해 주세요." />
       <button id="send-message-btn" @click="sendMessage" >Send</button>
     </div>
 
@@ -42,20 +35,24 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
+export interface ChatInformation {
+  name: string;
+  message?: string;
+}
+
 @Component
 export default class SendMessage extends Vue {
   message = '';
   textarea = '';
-  textAreaArr: string[];
+  textAreaArr1: ChatInformation[];
+  textAreaArr2: ChatInformation[];
 
-  myName = this.$store.getters['userStore/name'];
-  //상대방 이름
-  targetName = this.$route.params.name;
-
-  name = '';
+  myName = '';
+  targetName = '';
   roomName = '';
 
-  testMsg = '';
+  notice = '';
+
   myInfo: {
     nickName: string,
     id: string,
@@ -73,7 +70,8 @@ export default class SendMessage extends Vue {
         roomName: '',
       },
     }
-    this.textAreaArr = [];
+    this.textAreaArr1 = []
+    this.textAreaArr2 = [];
   }
 
   created() {
@@ -82,66 +80,63 @@ export default class SendMessage extends Vue {
 
   private connectSocket() {
     this.$socket.on('connect', () => {
-      const nickName = this.myName;
+      const nickName = this.getName;
+      console.log(`이름 설정 : ${nickName}`)
       this.$socket.emit('setInit', { nickName }, (response: any) => {
         this.myInfo.nickName = response.nickName;
         this.myInfo.id = this.$socket.id;
         this.myInfo.room = response.room;
-        this.name = this.myInfo.nickName;
         this.roomName = this.myInfo.room.roomName;
       })
     });
     // 채팅방 조회
     this.getChatList();
-    this.test();
   }
   private getChatList() {
     this.$socket.emit('getChatRoomList', null);
     this.$socket.on('getChatRoomList', (data) => {
-      console.log(data);
+      this.$socket.emit('enterChatRoom', data);
+      this.$socket.on('enterChatRoom',(data) => {
+        alert(data)
+        this.notice = data;
+      })
     });
+
   }
 
-  // private test2() {
-  //   const nickName = this.myName;
-  //   const targetName = this.targetName;
-  //   this.$socket.emit('createChatRoom',{ targetName });
-  //   this.$socket.emit('enterChatRoom');
-  //   this.$socket.on('enterChatRoom',(data) => {
-  //     console.log(data.message);
-  //   })
-  // }
-  // private initRoom() {
-  //   this.test();
-  //   const nickName = this.targetName;
-  //   this.$socket.emit('setInit', { nickName }, (response: any) => {
-  //     this.myInfo.nickName = response.nickName;
-  //     this.myInfo.id = this.$socket.id;
-  //     this.myInfo.room = response.room;
-  //     this.name = this.myInfo.nickName;
-  //     this.roomName = this.myInfo.room.roomName;
-  //   })
-  // }
-
   private sendMessage() {
-    this.$socket.emit('sendMessage', this.message);
-    this.getMessage();
+    const sendData = {
+      message: this.message,
+      nickName: this.getName,
+    }
+    this.$socket.emit('sendMessage', sendData);
     this.message = '';
+    this.getMessage();
+
   }
 
   private getMessage() {
-    this.$socket.on('sendMessage', (data) => {
-      this.textarea = data.message;
-      this.textAreaArr.push(this.textarea);
+    this.$socket.on('getMessage', (data) => {
+      const { nickName, message } = data;
+      this.textarea = message;
+      this.textAreaArr1.push(data.message);
+      this.setChatInformation(nickName, message);
     });
   }
 
-  private test() {
-    console.log('TEST')
-    this.$socket.on('getMessage', (data) => {
-      console.log(data.message)
-      this.testMsg = data.message;
-    });
+  private setChatInformation(nickName: string, message: string) {
+    if (nickName === this.getName) {
+      this.myName = nickName
+      this.textAreaArr1.push({name: nickName, message: message});
+    } else if (nickName) {
+      this.targetName = nickName
+      this.textAreaArr2.push({name: nickName, message: message});
+    }
+
+  }
+
+  mounted() {
+    this.getMessage();
   }
 
 }
@@ -198,6 +193,7 @@ export default class SendMessage extends Vue {
 .user1-wrapper {
   display: flex;
   justify-content: flex-start;
+  margin-top: 0.7em;
 }
 .user1-container {
   box-shadow: 0 1px 1px 1px #b7b7b7;
@@ -216,6 +212,7 @@ export default class SendMessage extends Vue {
 .user2-wrapper  {
   display: flex;
   justify-content: flex-end;
+  margin-top: 0.7em;
 }
 .user2-container {
   box-shadow: 0 1px 1px 1px #b7b7b7;
@@ -236,12 +233,22 @@ export default class SendMessage extends Vue {
 .user2-text {
   padding-left: 0.5em;
 }
-
-.chat-main-section {
+.chat-main-section-you, .chat-main-section-my {
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+}
+.chat-main-section-you {
+  justify-content: flex-start;
+}
+.chat-main-section-you > h5 {
+  margin-left: 0.5em;
+}
+.chat-main-section-my {
+  justify-content: flex-end;
+}
+.chat-main-section-my > h5 {
+  margin-right: 0.5em;
 }
 
 .notice-msg {

@@ -30,8 +30,7 @@ export default class NavigationComponent extends Vue{
   private logout() {
     const result = this.$store.dispatch('userStore/logout', this.name);
     if (result) {
-
-      this.$socket.emit('closedChat', null);
+      this.$socket.emit('closedChat', this.getName);
       this.$router.replace('/');
     }
   }

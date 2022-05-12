@@ -7,6 +7,10 @@ declare module 'vue/types/vue' {
   interface Vue {
     $socket: Socket;
 
+    isLogin: boolean;
+    getName: string;
+    getToken: string;
+
   }
 }
 

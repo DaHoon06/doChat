@@ -22,16 +22,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //소켓 연결시 유저목록에 추가
   @SubscribeMessage('connect')
   public handleConnection(client: Socket): void {
-    console.log('connected', client.id);
+    console.log('----------- 소켓 연결 -----------', client.id);
     client.leave(client.id);
     client.data.roomId = `room:lobby`;
     client.join('room:lobby');
+  }
+
+
+  @SubscribeMessage('test')
+  public test(client: Socket): void {
+    console.log('----------- 접속중인 유저 확인 -----------', client.id);
+    // client.leave(client.id);
+    // client.data.roomId = `room:lobby`;
+    // client.join('room:lobby');
+    this.server.sockets.emit('test', '접속 확인 중...');
   }
 
   //소켓 연결 해제시 유저목록에서 제거
   @SubscribeMessage('closedChat')
   public handleDisconnect(client: Socket): void {
     const { roomId } = client.data;
+    console.log('소켓 통신 전 데이터 : ', ...this.server.sockets.adapter.rooms.get(roomId));
     if (
       roomId != 'room:lobby' &&
       !this.server.sockets.adapter.rooms.get(roomId)
@@ -42,17 +53,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.ChartRoomService.getChatRoomList(),
       );
     }
-    console.log('disonnected', client.id);
+    this.ChartRoomService.exitChatRoom(client, roomId);
+    console.log('----------- 소켓 통신 종료 -----------', client.id);
   }
 
   //메시지가 전송되면 모든 유저에게 메시지 전송
   @SubscribeMessage('sendMessage')
-  sendMessage(client: Socket, message: string): void {
+  sendMessage(client: Socket, data: any): void {
     const { roomId } = client.data;
-    console.log(message);
-    client.to(roomId).emit('getMessage', {
-      id: client.id,
-      nickName: client.data.nickName,
+    const { message, nickName } = data;
+    console.log(`메세지 전송: ${nickName} -> ${message}`);
+    client.broadcast.to(roomId).emit('getMessage', {
+      id: roomId,
+      nickName: nickName,
       message,
     });
   }
@@ -60,19 +73,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //처음 접속시 닉네임 등 최초 설정
   @SubscribeMessage('setInit')
   setInit(client: Socket, data: any): any {
-    console.log({ client, data });
-    if (client.data.isInit) {
-      return;
-    }
-
-    client.data.nickName = data.nickName
-      ? data.nickName
-      : '낯선사람' + client.id;
-
+    console.log(data);
+    console.log(`초기 닉네임 설정 : ${data.nickName}`);
+    const { nickName } = data;
+    console.log(client.data.isInit);
+    if (client.data.isInit) return;
+    client.data.nickName = nickName ? nickName : '낯선사람' + client.id;
+    console.log('초기값 들어있니??', client.data.nickName);
     client.data.isInit = true;
-
     return {
-      nickName: client.data.nickName,
+      nickName: nickName,
       room: {
         roomId: 'room:lobby',
         roomName: '채팅방',
@@ -80,17 +90,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     };
   }
 
-  //닉네임 변경
-  @SubscribeMessage('setNickname')
-  setNickname(client: Socket, nickname: string): void {
-    const { roomId } = client.data;
-    client.to(roomId).emit('getMessage', {
-      id: null,
-      nickName: '안내',
-      message: `"${client.data.nickName}"님이 "${nickname}"으로 닉네임을 변경하셨습니다.`,
-    });
-    client.data.nickName = nickname;
-  }
 
   //채팅방 목록 가져오기
   @SubscribeMessage('getChatRoomList')
@@ -118,8 +117,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //채팅방 들어가기
   @SubscribeMessage('enterChatRoom')
-  enterChatRoom(client: Socket, roomId: string) {
+  enterChatRoom(client: Socket, payload: string) {
     //이미 접속해있는 방 일 경우 재접속 차단
+    console.log('EnterRoom');
+    console.log(client.data.roomId);
+    const { roomId } = payload['room:lobby'];
     if (client.rooms.has(roomId)) {
       return;
     }

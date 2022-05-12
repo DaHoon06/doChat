@@ -12,7 +12,7 @@
         <label class="nickName" for="name" v-else>
           <small>{{ this.existsName }}</small>
         </label>
-        <input type="text" class="name" id="name" v-model="name"/>
+        <input type="text" class="name" @keyup.enter="login" id="name" v-model="name"/>
       </article>
 
       <article>
@@ -44,6 +44,7 @@ export default class LoginComponent extends Vue {
     const result = await this.$store.dispatch('userStore/login', sendData);
 
     if (result) {
+      this.$socket.emit('test',null)
       await this.$router.push('/chat');
     } else {
       this.enterName = false;

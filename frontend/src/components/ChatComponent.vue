@@ -69,6 +69,15 @@ export default class ChatComponent extends Vue {
       await this.load();
     },300)
   }
+  // test() {
+  //   this.$socket.emit('testSocket',null)
+  //   this.$socket.on('testSocket',(data) => {
+  //     console.log(data);
+  //   })
+  // }
+  // mounted() {
+  //   this.test();
+  // }
 
 
 }
