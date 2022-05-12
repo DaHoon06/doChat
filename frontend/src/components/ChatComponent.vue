@@ -65,7 +65,6 @@ export default class ChatComponent extends Vue {
   }
 
   async updated() {
-
     setTimeout(async () => {
       await this.load();
     },300)

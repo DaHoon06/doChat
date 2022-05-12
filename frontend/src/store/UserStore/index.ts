@@ -26,6 +26,9 @@ const UserStore: Module<IStore.State, IStore.State> = {
       state.token = '';
       state.name = '';
     },
+    isLogin(state: IStore.State, payload: boolean) {
+      state.isLogin = payload;
+    }
   },
   actions: {
     async login(context, sendData) {
