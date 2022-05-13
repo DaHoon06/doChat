@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { JwtPayload } from '../../../../api/auth/jwt.config';
+import { JwtPayload } from '../auth/jwt.config';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../schema/user/user.schema';
+import { User, UserDocument } from '../../libs/db/schema/user/user.schema';
 import { Model } from 'mongoose';
-import { UserLoginDto } from '../../../../api/user/dto/user.dto';
+import { UserLoginDto } from './dto/user.dto';
 
 @Injectable()
 export class UserRepository {

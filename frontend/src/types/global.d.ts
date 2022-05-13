@@ -10,7 +10,6 @@ declare module 'vue/types/vue' {
     isLogin: boolean;
     getName: string;
     getToken: string;
-
   }
 }
 

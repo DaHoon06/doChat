@@ -2,37 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { chatRoomListDTO } from './dto/chat.dto';
 import { Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
+import { ChatRepository } from './chat.repository';
 
 @Injectable()
-export class ChatRoomService {
+export class ChatService {
   private readonly chatRoomList: Record<string, chatRoomListDTO>;
-  constructor() {
-    this.chatRoomList = {
-      'room:lobby': {
-        roomId: 'room:lobby',
-        roomName: '채팅방',
-        cheifId: null,
-      },
-    };
-  }
-  createChatRoom(client: Socket, roomName: string): void {
-    const roomId = `room:${uuidv4()}`;
-    const nickname: string = client.data.nickname;
-    this.chatRoomList[roomId] = {
-      roomId,
-      cheifId: client.id,
-      roomName,
-    };
-    client.data.roomId = roomId;
-    client.rooms.clear();
-    client.join(roomId);
-    client.emit('getMessage', {
-      id: null,
-      nickname: '안내',
-      message: '"' + nickname + '"님이 "' + roomName + '"방을 생성하였습니다.',
-    });
+  constructor(private readonly ChatRepository: ChatRepository) {}
+
+  getUUID(): string {
+    return uuidv4();
   }
 
+  //TODO: 채팅방 생성
+  async createChatRoom(client: Socket, roomName: string): Promise<void> {
+    client.join(roomName);
+    await this.ChatRepository.createChatRoom(client, roomName);
+  }
+  //TODO: 채팅방 입장
   enterChatRoom(client: Socket, roomId: string) {
     console.log(`방 정보 : ${roomId}`);
     client.data.roomId = roomId;
@@ -46,17 +32,16 @@ export class ChatRoomService {
       message: `"${nickName}"님이 "${roomName}"방에 접속하셨습니다.`,
     });
   }
-  // nickName: string
-  exitChatRoom(client: Socket, roomId: string ) {
-    client.data.roomId = `room:lobby`;
+
+  exitChatRoom(client: Socket) {
+    const { nickName, roomId } = client.data;
     client.rooms.clear();
-    client.join(`room:lobby`);
-    const { nickName } = client.data;
+    client.join(roomId);
     console.log(`${nickName} 님이 로그아웃 하셨습니다. : 방[${roomId}]`);
     client.to(roomId).emit('getMessage', {
       id: null,
       nickname: '안내',
-      message: '"' + nickName + '"님이 방에서 나갔습니다.',
+      message: '"' + nickName + '"님이 퇴장하셨습니다.',
     });
   }
 
@@ -66,11 +51,12 @@ export class ChatRoomService {
   }
 
   getChatRoomList(): Record<string, chatRoomListDTO> {
-    console.log(`채팅방 리스트 : ${this.chatRoomList}`);
+    console.log(this.chatRoomList);
+    console.log(`채팅방 리스트 : `, this.chatRoomList);
     return this.chatRoomList;
   }
 
   deleteChatRoom(roomId: string) {
-    delete this.chatRoomList[roomId];
+    // delete this.chatRoomList;
   }
 }
