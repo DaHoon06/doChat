@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { IS_PROD } from '../../libs/enum/config';
 import { jwtConfig } from '../auth/jwt.config';
-import { UserRepository } from '../../libs/db/repository/user/user.repository';
+import { UserRepository } from './user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../libs/db/schema/user/user.schema';
 

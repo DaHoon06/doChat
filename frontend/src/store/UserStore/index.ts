@@ -59,7 +59,7 @@ const UserStore: Module<IStore.State, IStore.State> = {
       try {
         const { token } = payload;
         const { data, status } = await axios.post(`/user/auth/${token}`);
-        console.log(data);
+
         if (status === 201) return true
       } catch (e) {
         return false;
