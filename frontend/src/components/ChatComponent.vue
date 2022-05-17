@@ -58,10 +58,12 @@ export default class ChatComponent extends Vue {
     this.userLists = data;
   }
 
+  //TODO : 클릭시에 유저 이름으로 채팅방을 생성
   async doChat(name: string) {
     const route = this.$router.resolve({ path: `/chat/${name}` });
     const options = 'top=100, left=650, width=600, height=700, status=no, menubar=no, toolbar=no, resizable=no';
-    window.open(route.href,'chatRoom', options)
+    await this.$socket.emit('createChatRoom', name);
+    await window.open(route.href,'chatRoom', options)
   }
 
   async updated() {
@@ -69,16 +71,6 @@ export default class ChatComponent extends Vue {
       await this.load();
     },300)
   }
-  // test() {
-  //   this.$socket.emit('testSocket',null)
-  //   this.$socket.on('testSocket',(data) => {
-  //     console.log(data);
-  //   })
-  // }
-  // mounted() {
-  //   this.test();
-  // }
-
 
 }
 </script>

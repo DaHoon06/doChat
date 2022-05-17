@@ -4,24 +4,22 @@
 
       <p class="notice-msg">{{this.notice}}</p>
 
-      <section class="user1-wrapper" v-for="(contents, index) of this.textAreaArr2" :key="index">
-        <article class="user1-container">
+      <section class="user1-wrapper" >
+        <article class="user1-container" v-for="(contents, index) of this.textAreaArr2" :key="index">
           <main class="chat-main-section-you">
             <span class="user1">{{ contents.name }}</span>
             <h5 class="user1-text">{{ contents.message }}</h5>
           </main>
         </article>
-      </section>
 
-
-      <section class="user2-wrapper" v-for="(contents, index) of this.textAreaArr1" :key="index">
-        <article class="user2-container">
+        <article class="user2-container" v-for="(contents, index) of this.textAreaArr1" :key="index">
           <main class="chat-main-section-my">
             <h5 class="user2-text">{{ contents.message }}</h5>
             <span class="user2">{{ contents.name }}</span>
           </main>
         </article>
       </section>
+
 
     </div>
     <div id="message-input-area">
@@ -79,16 +77,6 @@ export default class SendMessage extends Vue {
   }
 
   private connectSocket() {
-    this.$socket.on('connect', () => {
-      const nickName = this.getName;
-      console.log(`이름 설정 : ${nickName}`)
-      this.$socket.emit('setInit', { nickName }, (response: any) => {
-        this.myInfo.nickName = response.nickName;
-        this.myInfo.id = this.$socket.id;
-        this.myInfo.room = response.room;
-        this.roomName = this.myInfo.room.roomName;
-      })
-    });
     // 채팅방 조회
     this.getChatList();
   }
@@ -217,6 +205,8 @@ export default class SendMessage extends Vue {
 .user2-container {
   box-shadow: 0 1px 1px 1px #b7b7b7;
   border: 1px solid #afafaf;
+  position: relative;
+  top: 2em;
   color: #313131;
   background: #d3d3f8;
   border-radius: 10px;

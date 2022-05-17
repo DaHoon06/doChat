@@ -23,13 +23,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {Component, Vue} from "vue-property-decorator";
 
 @Component
 export default class LoginComponent extends Vue {
   name = '';
-  enterName = true
-  test = '';
+  enterName = true;
+
   msg: string;
 
   constructor() {
@@ -41,23 +41,33 @@ export default class LoginComponent extends Vue {
     const sendData = {
       name: this.name,
     };
-    const result = await this.$store.dispatch('userStore/login', sendData);
 
+    const result = await this.$store.dispatch('userStore/login', sendData);
     if (result) {
-      this.$socket.emit('test',null)
-      await this.$router.push('/chat');
+      const connection = await this.connectionSocket();
+      if (connection) await this.$router.push('/chat');
     } else {
       this.enterName = false;
-      this.msg = '존재하는 이름 입니다.';
-      this.existsName = this.msg;
+      this.existsName = '존재하는 이름 입니다.';
     }
   }
 
+  private async connectionSocket() {
+    return this.$socket.on('connect', () => {
+      const nickName = this.getName;
+      console.log(`이름 설정 : ${nickName}`)
+      this.$socket.emit('setUserInformation', {nickName}, (res: any) => {
+        const {roomId} = res.roomId;
+        console.log(roomId);
+      });
+    });
+  }
+
   private set existsName(msg: string) {
-    this.test = msg
+    this.msg = msg
   }
   private get existsName(): string {
-    return this.test;
+    return this.msg;
   }
 
 
