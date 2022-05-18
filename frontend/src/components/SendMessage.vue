@@ -1,34 +1,20 @@
 <template>
   <div id="chat-room-wrapper">
     <div id="message-textarea">
+      <p class="notice-msg">{{ this.notice }}</p>
 
-      <p class="notice-msg">{{this.notice}}</p>
-
-      <section class="user1-wrapper" v-for="(contents, index) of this.textAreaArr2" :key="index">
-        <article class="user1-container">
-          <main class="chat-main-section-you">
-            <span class="user1">{{ contents.name }}</span>
-            <h5 class="user1-text">{{ contents.message }}</h5>
-          </main>
-        </article>
-      </section>
-
-
-      <section class="user2-wrapper" v-for="(contents, index) of this.textAreaArr1" :key="index">
-        <article class="user2-container">
-          <main class="chat-main-section-my">
-            <h5 class="user2-text">{{ contents.message }}</h5>
-            <span class="user2">{{ contents.name }}</span>
-          </main>
-        </article>
-      </section>
-
+      <div id="chat-body"></div>
     </div>
     <div id="message-input-area">
-      <input type="text" id="message-input" v-model="message" @keyup.enter='sendMessage' placeholder="메세지를 입력해 주세요." />
-      <button id="send-message-btn" @click="sendMessage" >Send</button>
+      <input
+        type="text"
+        id="message-input"
+        v-model="message"
+        @keyup.enter="sendMessage"
+        placeholder="메세지를 입력해 주세요."
+      />
+      <button id="send-message-btn" @click="sendMessage">Send</button>
     </div>
-
   </div>
 </template>
 
@@ -42,36 +28,13 @@ export interface ChatInformation {
 
 @Component
 export default class SendMessage extends Vue {
-  message = '';
-  textarea = '';
-  textAreaArr1: ChatInformation[];
-  textAreaArr2: ChatInformation[];
-
-  myName = '';
-  targetName = '';
-  roomName = '';
-
-  notice = '';
-
-  myInfo: {
-    nickName: string,
-    id: string,
-    room: {
-      roomName: string
-    },
-  }
+  notice = "";
+  message = "";
+  nickName = "";
+  chatMessage = "";
 
   constructor() {
     super();
-    this.myInfo = {
-      nickName: '',
-      id: '',
-      room: {
-        roomName: '',
-      },
-    }
-    this.textAreaArr1 = []
-    this.textAreaArr2 = [];
   }
 
   created() {
@@ -79,66 +42,83 @@ export default class SendMessage extends Vue {
   }
 
   private connectSocket() {
-    this.$socket.on('connect', () => {
-      const nickName = this.getName;
-      console.log(`이름 설정 : ${nickName}`)
-      this.$socket.emit('setInit', { nickName }, (response: any) => {
-        this.myInfo.nickName = response.nickName;
-        this.myInfo.id = this.$socket.id;
-        this.myInfo.room = response.room;
-        this.roomName = this.myInfo.room.roomName;
-      })
-    });
-    // 채팅방 조회
     this.getChatList();
   }
   private getChatList() {
-    this.$socket.emit('getChatRoomList', null);
-    this.$socket.on('getChatRoomList', (data) => {
-      this.$socket.emit('enterChatRoom', data);
-      this.$socket.on('enterChatRoom',(data) => {
-        alert(data)
+    this.$socket.emit("getChatRoomList", null);
+    this.$socket.on("getChatRoomList", (data) => {
+      this.$socket.emit("enterChatRoom", data);
+      this.$socket.on("enterChatRoom", (data) => {
+        alert(data);
         this.notice = data;
-      })
+      });
     });
-
   }
 
   private sendMessage() {
     const sendData = {
       message: this.message,
       nickName: this.getName,
+    };
+    if (this.message) {
+      this.$socket.emit("sendMessage", sendData);
+      this.$socket.on("getMessage", (data) => {
+        const { nickName, message } = data;
+        this.nickName = nickName;
+        this.chatMessage = message;
+        this.getMessage();
+      });
+    } else {
+      alert("메세지가 입력되지 않았습니다.");
     }
-    this.$socket.emit('sendMessage', sendData);
-    this.message = '';
-    this.getMessage();
-
   }
 
   private getMessage() {
-    this.$socket.on('getMessage', (data) => {
-      const { nickName, message } = data;
-      this.textarea = message;
-      this.textAreaArr1.push(data.message);
-      this.setChatInformation(nickName, message);
-    });
+    this.setChatInformation(this.nickName, this.chatMessage);
+    this.message = "";
   }
 
   private setChatInformation(nickName: string, message: string) {
-    if (nickName === this.getName) {
-      this.myName = nickName
-      this.textAreaArr1.push({name: nickName, message: message});
-    } else if (nickName) {
-      this.targetName = nickName
-      this.textAreaArr2.push({name: nickName, message: message});
-    }
+    const sendData = {
+      name: nickName,
+      message: message,
+    };
+    this.makeHTMLTags(sendData);
+  }
 
+  private makeHTMLTags(sendData: ChatInformation) {
+    const { name, message } = sendData;
+    if (name && message) {
+      const div = document.getElementById("chat-body");
+      const makeSection = document.createElement("section");
+      const makeArticle = document.createElement("article");
+      const makeMain = document.createElement("main");
+      const msgArea = document.createElement("h5");
+      const nameTag = document.createElement("span");
+
+      makeSection.className =
+        name === this.getName ? "user-wrapper-other" : "user-wrapper";
+      makeArticle.className = "user-container";
+      makeMain.className = "chat-main-section";
+      msgArea.className = "user-text";
+      nameTag.className = "user";
+
+      msgArea.innerText = message + "";
+      nameTag.innerText = name + "";
+
+      makeSection.appendChild(makeArticle);
+      makeArticle.appendChild(makeMain);
+      makeMain.appendChild(msgArea);
+      makeMain.appendChild(nameTag);
+      div?.appendChild(makeSection);
+    } else {
+      return false;
+    }
   }
 
   mounted() {
     this.getMessage();
   }
-
 }
 </script>
 
@@ -179,23 +159,35 @@ export default class SendMessage extends Vue {
 #message-input-area {
   height: 20%;
 }
-#message-textarea {
 
+.notice-msg {
+  font-weight: 500;
+  color: #9d9da2;
+  font-size: 0.85em;
 }
+</style>
 
-.user1, .user2 {
+<style>
+.user {
   display: inline-block;
   border: 1px solid #afafaf;
   border-radius: 45px;
   width: 40px;
   height: 40px;
 }
-.user1-wrapper {
+.user-wrapper {
   display: flex;
   justify-content: flex-start;
   margin-top: 0.7em;
 }
-.user1-container {
+
+.user-wrapper-other {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.7em;
+}
+
+.user-container {
   box-shadow: 0 1px 1px 1px #b7b7b7;
   border: 1px solid #afafaf;
   color: #313131;
@@ -209,51 +201,21 @@ export default class SendMessage extends Vue {
   margin-left: 1em;
   padding-left: 0.5em;
 }
-.user2-wrapper  {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.7em;
-}
-.user2-container {
-  box-shadow: 0 1px 1px 1px #b7b7b7;
-  border: 1px solid #afafaf;
-  color: #313131;
-  background: #d3d3f8;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 15em;
-  margin-right: 1em;
+
+.user-text {
   padding-right: 0.5em;
 }
-.user1-text {
-  padding-right: 0.5em;
-}
-.user2-text {
-  padding-left: 0.5em;
-}
-.chat-main-section-you, .chat-main-section-my {
+
+.chat-main-section {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
-.chat-main-section-you {
-  justify-content: flex-start;
+.user-wrapper-other .chat-main-section {
+  flex-direction: row;
 }
-.chat-main-section-you > h5 {
-  margin-left: 0.5em;
-}
-.chat-main-section-my {
-  justify-content: flex-end;
-}
-.chat-main-section-my > h5 {
-  margin-right: 0.5em;
-}
-
-.notice-msg {
-  font-weight: 500;
-  color: #9d9da2;
-  font-size: 0.85em;
+.user-wrapper .chat-main-section {
+  flex-direction: row-reverse;
 }
 </style>

@@ -47,11 +47,11 @@ export class ChatRoomService {
     });
   }
   // nickName: string
-  exitChatRoom(client: Socket, roomId: string ) {
+  exitChatRoom(client: Socket) {
+    const { nickName, roomId } = client.data;
     client.data.roomId = `room:lobby`;
     client.rooms.clear();
     client.join(`room:lobby`);
-    const { nickName } = client.data;
     console.log(`${nickName} 님이 로그아웃 하셨습니다. : 방[${roomId}]`);
     client.to(roomId).emit('getMessage', {
       id: null,
@@ -66,7 +66,7 @@ export class ChatRoomService {
   }
 
   getChatRoomList(): Record<string, chatRoomListDTO> {
-    console.log(`채팅방 리스트 : ${this.chatRoomList}`);
+    console.log(`채팅방 리스트 : `);
     return this.chatRoomList;
   }
 

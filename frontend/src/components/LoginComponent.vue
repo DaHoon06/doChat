@@ -12,7 +12,13 @@
         <label class="nickName" for="name" v-else>
           <small>{{ this.existsName }}</small>
         </label>
-        <input type="text" class="name" @keyup.enter="login" id="name" v-model="name"/>
+        <input
+          type="text"
+          class="name"
+          @keyup.enter="login"
+          id="name"
+          v-model="name"
+        />
       </article>
 
       <article>
@@ -27,40 +33,64 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class LoginComponent extends Vue {
-  name = '';
-  enterName = true
-  test = '';
+  name = "";
+  enterName = true;
+  test = "";
   msg: string;
+  roomName = "";
+
+  myInfo: {
+    nickName: string;
+    id: string;
+    room: {
+      roomName: string;
+    };
+  };
 
   constructor() {
     super();
-    this.msg = '';
+    this.msg = "";
+
+    this.myInfo = {
+      nickName: "",
+      id: "",
+      room: {
+        roomName: "",
+      },
+    };
   }
 
   async login() {
     const sendData = {
       name: this.name,
     };
-    const result = await this.$store.dispatch('userStore/login', sendData);
+    const result = await this.$store.dispatch("userStore/login", sendData);
 
     if (result) {
-      this.$socket.emit('test',null)
-      await this.$router.push('/chat');
+      this.$socket.on("connect", () => {
+        const nickName = this.getName;
+        console.log(`이름 설정 : ${nickName}`);
+        this.$socket.emit("setInit", { nickName }, (response: any) => {
+          this.myInfo.nickName = response.nickName;
+          this.myInfo.id = this.$socket.id;
+          this.myInfo.room = response.room;
+          this.roomName = this.myInfo.room.roomName;
+        });
+      });
+      await this.$router.push("/chat");
     } else {
       this.enterName = false;
-      this.msg = '존재하는 이름 입니다.';
+      this.msg = "존재하는 이름 입니다.";
       this.existsName = this.msg;
     }
   }
 
   private set existsName(msg: string) {
-    this.test = msg
+    this.test = msg;
   }
   private get existsName(): string {
     return this.test;
   }
-
-
 }
 </script>
 
@@ -107,7 +137,7 @@ input {
 }
 #profile-img {
   margin: 3em auto;
-  background: #C4C4C4;
+  background: #c4c4c4;
   border: 1px solid #cfcff4;
   border-radius: 45px;
   width: 80px;
@@ -126,5 +156,4 @@ input {
 .name:nth-child(2) {
   margin: auto;
 }
-
 </style>

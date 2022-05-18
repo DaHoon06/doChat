@@ -22,27 +22,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //소켓 연결시 유저목록에 추가
   @SubscribeMessage('connect')
   public handleConnection(client: Socket): void {
-    console.log('----------- 소켓 연결 -----------', client.id);
     client.leave(client.id);
     client.data.roomId = `room:lobby`;
+    console.log('CONNECTED SOCKET.IO');
     client.join('room:lobby');
-  }
-
-
-  @SubscribeMessage('test')
-  public test(client: Socket): void {
-    console.log('----------- 접속중인 유저 확인 -----------', client.id);
-    // client.leave(client.id);
-    // client.data.roomId = `room:lobby`;
-    // client.join('room:lobby');
-    this.server.sockets.emit('test', '접속 확인 중...');
   }
 
   //소켓 연결 해제시 유저목록에서 제거
   @SubscribeMessage('closedChat')
   public handleDisconnect(client: Socket): void {
-    const { roomId } = client.data;
-    console.log('소켓 통신 전 데이터 : ', ...this.server.sockets.adapter.rooms.get(roomId));
+    const { roomId, nickName } = client.data;
+
+    console.log(
+      '소켓 통신 전 데이터 : ',
+      ...this.server.sockets.adapter.rooms.get(roomId),
+    );
     if (
       roomId != 'room:lobby' &&
       !this.server.sockets.adapter.rooms.get(roomId)
@@ -53,7 +47,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.ChartRoomService.getChatRoomList(),
       );
     }
-    this.ChartRoomService.exitChatRoom(client, roomId);
+    this.ChartRoomService.exitChatRoom(client);
     console.log('----------- 소켓 통신 종료 -----------', client.id);
   }
 
@@ -73,12 +67,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //처음 접속시 닉네임 등 최초 설정
   @SubscribeMessage('setInit')
   setInit(client: Socket, data: any): any {
-    console.log(data);
-    console.log(`초기 닉네임 설정 : ${data.nickName}`);
     const { nickName } = data;
     console.log(client.data.isInit);
     if (client.data.isInit) return;
-    client.data.nickName = nickName ? nickName : '낯선사람' + client.id;
+    client.data.nickName = nickName;
     console.log('초기값 들어있니??', client.data.nickName);
     client.data.isInit = true;
     return {
@@ -89,7 +81,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       },
     };
   }
-
 
   //채팅방 목록 가져오기
   @SubscribeMessage('getChatRoomList')
@@ -102,6 +93,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('createChatRoom')
   createChatRoom(client: Socket, roomName: string) {
     //이전 방이 만약 나 혼자있던 방이면 제거
+    console.log(client.data.roomId);
     if (
       client.data.roomId != 'room:lobby' &&
       this.server.sockets.adapter.rooms.get(client.data.roomId).size == 1
@@ -120,11 +112,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   enterChatRoom(client: Socket, payload: string) {
     //이미 접속해있는 방 일 경우 재접속 차단
     console.log('EnterRoom');
-    console.log(client.data.roomId);
     const { roomId } = payload['room:lobby'];
     if (client.rooms.has(roomId)) {
       return;
     }
+    console.log(roomId);
     //이전 방이 만약 나 혼자있던 방이면 제거
     if (
       client.data.roomId != 'room:lobby' &&
