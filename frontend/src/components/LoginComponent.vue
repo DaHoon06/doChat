@@ -111,6 +111,7 @@ input {
   border-radius: 20px;
   box-shadow: 0 1px 1px 1px #c7c7c7;
   width: 50vw;
+  max-width: 500px;
   height: 75vh;
   max-height: 500px;
   margin: 5em auto;

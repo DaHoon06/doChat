@@ -1,38 +1,36 @@
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import store from '@/store/index';
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
+import store from "@/store/index";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
-    redirect: '/doChat',
+    path: "/",
+    redirect: "/doChat",
   },
   {
-    path:'/doChat',
-    name: 'index',
-    component: () => import('@/views/Home.vue'),
+    path: "/doChat",
+    name: "index",
+    component: () => import("@/views/Home.vue"),
     meta: { unauthorized: true },
   },
   {
-    path:'/chat',
-    name: 'chat',
-    component: () => import('@/views/chat/ChatList.vue'),
+    path: "/chat",
+    name: "chat",
+    component: () => import("@/views/chat/Chat.vue"),
   },
   {
-    path:'/chat/:name',
-    name: 'chatRoom',
-    component: () => import('@/views/chat/ChattingRoom.vue'),
-  }
-
-
-]
+    path: "/chat/:name",
+    name: "chatRoom",
+    component: () => import("@/views/chat/ChattingRoom.vue"),
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
 });
 
 router.beforeEach(async (to, from, next) => {
@@ -41,14 +39,14 @@ router.beforeEach(async (to, from, next) => {
     const { unauthorized } = meta || { unauthorized: true };
     if (unauthorized) return next();
 
-    const token = store.getters['userStore/token'];
-    const verified = await store.dispatch('userStore/verify', { token })
+    const token = store.getters["userStore/token"];
+    const verified = await store.dispatch("userStore/verify", { token });
 
     if (verified) return next();
-    else return next('/401');
+    else return next("/401");
   } catch (e) {
-    return next('/401');
+    return next("/401");
   }
-})
+});
 
-export default router
+export default router;

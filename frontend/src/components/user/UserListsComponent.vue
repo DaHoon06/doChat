@@ -1,16 +1,22 @@
 <template>
   <section id="user-list">
-
     <article id="user-list-section">
-      <div class="user-list-items" v-for="(lists, index) of this.userLists" :key="index">
+      <div
+        class="user-list-items"
+        v-for="(lists, index) of this.userLists"
+        :key="index"
+      >
         <span class="list-items">
           <a @click="doChat(lists.name)">{{ lists.name }}</a>
         </span>
-        <span v-if="lists.connecting" id="isLogin" class="list-items blinking"></span>
+        <span
+          v-if="lists.connecting"
+          id="isLogin"
+          class="list-items blinking"
+        ></span>
         <span v-else id="isLogout" class="list-items blinking"></span>
       </div>
     </article>
-
   </section>
 </template>
 
@@ -21,32 +27,29 @@ export interface IUserLists {
   name: string;
   createdAt: Date;
   updatedAt: Date;
-  connecting: boolean
+  connecting: boolean;
 }
 
 @Component
 export default class ChatComponent extends Vue {
-  nameTest = '';
-  roomNameTest = '';
-  userName = this.$store.getters['userStore/name'];
   userLists: IUserLists[];
 
   myInfo: {
-    nickName: string,
-    id: string,
+    nickName: string;
+    id: string;
     room: {
-      roomName: string
-    },
-  }
+      roomName: string;
+    };
+  };
   constructor() {
     super();
     this.myInfo = {
-      nickName: '',
-      id: '',
+      nickName: "",
+      id: "",
       room: {
-        roomName: '',
+        roomName: "",
       },
-    }
+    };
     this.userLists = [];
   }
   async created() {
@@ -54,44 +57,45 @@ export default class ChatComponent extends Vue {
   }
 
   async load() {
-    const{ data } = await this.axios.get('/user/chatLists');
+    const { data } = await this.axios.get("/user/chatLists");
     this.userLists = data;
   }
 
-  async doChat(name: string) {
-    const route = this.$router.resolve({ path: `/chat/${name}` });
-    const options = 'top=100, left=650, width=600, height=700, status=no, menubar=no, toolbar=no, resizable=no';
-    window.open(route.href,'chatRoom', options)
+  doChat(name: string) {
+    this.$router.push({ path: `/chat/${name}` });
   }
 
   async updated() {
     setTimeout(async () => {
       await this.load();
-    },300)
+    }, 300);
   }
-  // test() {
-  //   this.$socket.emit('testSocket',null)
-  //   this.$socket.on('testSocket',(data) => {
-  //     console.log(data);
-  //   })
-  // }
-  // mounted() {
-  //   this.test();
-  // }
-
-
 }
 </script>
 
 <style scoped>
+@media screen and (max-width: 1000px) {
+  /*#user-list {*/
+  /*  display: flex;*/
+  /*  flex-direction: row;*/
+  /*  justify-content: space-between;*/
+  /*}*/
+}
+#user-list {
+  position: fixed;
+  width: 100vw;
+  max-width: 330px;
+  padding-top: 1em;
+  background: #fdfcfd;
+  min-height: 800px;
+  height: 100vh;
+}
 
 #user-list-section {
   margin-top: 2em;
+  overflow-y: auto;
 }
-#user-list {
-  display: flex;
-  flex-direction: column;
-}
+
 .user-list-items:first-child {
   border-top: 1px dotted #afafaf;
 }
@@ -126,19 +130,29 @@ export default class ChatComponent extends Vue {
   animation: blink 3s ease-in-out infinite alternate;
 }
 @-webkit-keyframes blink {
-  40% {opacity:0.8;}
-  100% {opacity:1;}
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 @-moz-keyframes blink {
-  40% {opacity:0.8;}
-  100% {opacity:1;}
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 @keyframes blink {
-  40% {opacity:0.8;}
-  100% {opacity:1;}
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-
-
 
 .list-items {
   margin: 0.5em 0.5em;

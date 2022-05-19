@@ -1,6 +1,5 @@
 <template>
   <div id="chat-room-container">
-    <navigation-component />
     <send-message />
   </div>
 </template>
@@ -8,13 +7,13 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import NavigationComponent from "@/components/common/NavigationComponent.vue";
-import SendMessage from "@/components/SendMessage.vue";
+import SendMessage from "@/components/chat/SendMessage.vue";
 
 @Component({
   components: {
     SendMessage,
     NavigationComponent,
-  }
+  },
 })
 export default class ChattingRoom extends Vue {
   // created() {}
@@ -30,7 +29,6 @@ export default class ChattingRoom extends Vue {
   width: 90vw;
   height: 75vh;
   max-height: 500px;
-  margin: 5em auto auto auto;
+  margin: auto auto auto auto;
 }
-
 </style>

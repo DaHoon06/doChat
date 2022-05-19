@@ -1,14 +1,13 @@
 <template>
-  <nav >
-    <div id="header-container">
-      <span id="login-user">
-        <small><strong id="user-info">{{ this.name }} 접속중</strong></small>
-      </span>
-      <span>
-        <button id="logout-btn" @click="logout">logout</button>
-      </span>
-    </div>
-    <hr/>
+  <nav id="nav-container">
+    <span id="login-user">
+      <small
+        ><strong id="user-info">{{ this.name }} 접속중</strong></small
+      >
+    </span>
+    <span>
+      <button id="logout-btn" @click="logout">logout</button>
+    </span>
   </nav>
 </template>
 
@@ -16,44 +15,47 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class NavigationComponent extends Vue{
+export default class NavigationComponent extends Vue {
   name: string;
   constructor() {
     super();
-    this.name = '';
+    this.name = "";
   }
 
   created() {
-    this.name = this.$store.getters['userStore/name'];
+    this.name = this.$store.getters["userStore/name"];
   }
 
   private logout() {
-    const result = this.$store.dispatch('userStore/logout', this.name);
+    const result = this.$store.dispatch("userStore/logout", this.name);
     if (result) {
-      this.$socket.emit('closedChat', this.getName);
-      this.$router.replace('/');
+      this.$socket.emit("closedChat", this.getName);
+      this.$router.replace("/");
     }
   }
-
-
 }
 </script>
 
 <style scoped>
-hr {
-  margin: 0.3em auto;
+#nav-container {
+  position: fixed;
+  background: white;
+  width: 100vw;
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5em 0;
+  height: 40px;
+  box-shadow: 3px 0 15px 2px #cbcbcb;
+  border-radius: 0 0 2px 2px;
 }
 #user-info {
   color: #8a8a8a;
 }
 #user-info::after {
-  content: ' |';
+  content: " |";
 }
-#header-container {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.5em 0;
-}
+
 #login-user {
   margin-right: 0.5em;
   height: 1em;

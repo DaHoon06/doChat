@@ -28,3 +28,4 @@ instance.interceptors.response.use(response => {
 })
 
 export const ins = instance;
+

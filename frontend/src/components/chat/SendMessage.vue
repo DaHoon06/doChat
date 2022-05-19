@@ -116,22 +116,35 @@ export default class SendMessage extends Vue {
     }
   }
 
-  mounted() {
-    this.getMessage();
-  }
+  // mounted() {
+  //   this.getMessage();
+  // }
 }
 </script>
 
 <style scoped>
 #chat-room-wrapper {
+  padding-top: 1em;
+  background: #cfcff4;
+  width: 100vw;
+  height: 800px;
+}
+#message-textarea {
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 4em;
+  width: 70vw;
+  max-width: 1000px;
+  min-width: 1000px;
+  height: 87%;
+  margin-left: 22em;
   overflow-y: auto;
-  height: 80%;
+  box-shadow: 0 5px 15px 8px grey;
 }
 #message-input {
   z-index: 5;
-  background: #cfcff4;
-  bottom: 9.5em;
-  left: 3em;
+  top: 52.5em;
+  left: 26.5em;
   position: fixed;
   padding-right: 4em;
   border: 1px solid #afafaf;
@@ -139,9 +152,10 @@ export default class SendMessage extends Vue {
   font-weight: 500;
   border-radius: 10px;
   padding-left: 5px;
-  width: 77%;
+  width: 100%;
+  max-width: 937px;
+  min-width: 937px;
   height: 2em;
-  outline: none;
   background: none;
 }
 #send-message-btn {
@@ -149,8 +163,8 @@ export default class SendMessage extends Vue {
   border-left: 1px solid #afafaf;
   position: fixed;
   color: #626262;
-  bottom: 10em;
-  right: 3.5em;
+  bottom: 5.3em;
+  left: 97.6em;
 }
 #send-message-btn:hover {
   cursor: pointer;
