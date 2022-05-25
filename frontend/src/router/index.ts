@@ -20,11 +20,6 @@ const routes: Array<RouteConfig> = [
     name: "chat",
     component: () => import("@/views/chat/Chat.vue"),
   },
-  {
-    path: "/chat/:name",
-    name: "chatRoom",
-    component: () => import("@/views/chat/ChattingRoom.vue"),
-  },
 ];
 
 const router = new VueRouter({

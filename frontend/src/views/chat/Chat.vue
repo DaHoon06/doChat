@@ -2,8 +2,8 @@
   <main id="chat-container">
     <navigation-component />
     <main id="body">
-      <user-lists-component />
-      <send-message />
+      <user-lists-component @target="setChatTarget" />
+      <send-message :targetName="setChatTarget" />
     </main>
   </main>
 </template>
@@ -21,22 +21,30 @@ import SendMessage from "@/components/chat/SendMessage.vue";
     SendMessage,
   },
 })
-export default class ChatList extends Vue {}
+export default class ChatList extends Vue {
+  targetName = "";
+
+  private setChatTarget(name: string) {
+    this.$socket.emit("test", name);
+    this.$socket.on("test", (data) => {
+      console.log(data);
+    });
+  }
+
+  private set targetNameComputed(name: string) {
+    this.targetName = name;
+  }
+  private get targetNameComputed() {
+    return this.targetName;
+  }
+
+  // mounted() {
+  //   this.setChatTarget();
+  // }
+}
 </script>
 
 <style scoped>
-/*#chat-container {*/
-/*  text-align: center;*/
-/*  background: white;*/
-/*  border-radius: 20px;*/
-/*  box-shadow: 0 1px 1px 1px #c7c7c7;*/
-/*  width: 50vw;*/
-/*  height: 75vh;*/
-/*  max-height: 500px;*/
-/*  margin: 5em auto;*/
-/*  overflow-y: auto;*/
-/*}*/
-
 #body {
   display: flex;
   flex-direction: row;

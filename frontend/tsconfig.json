@@ -4,22 +4,17 @@
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
+    "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
     "sourceMap": true,
-    "allowJs": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
-    ],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
+      "webpack-env",
+      "jest"
     ],
     "paths": {
       "@/*": [
@@ -39,10 +34,8 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-
   ],
   "exclude": [
     "node_modules"
-  ],
-  "strictPropertyInitialization": false
+  ]
 }

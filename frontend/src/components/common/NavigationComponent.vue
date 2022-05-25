@@ -39,7 +39,7 @@ export default class NavigationComponent extends Vue {
 <style scoped>
 #nav-container {
   position: fixed;
-  background: white;
+  background: #cfcff4;
   width: 100vw;
   margin: 0;
   display: flex;
@@ -48,6 +48,7 @@ export default class NavigationComponent extends Vue {
   height: 40px;
   box-shadow: 3px 0 15px 2px #cbcbcb;
   border-radius: 0 0 2px 2px;
+  z-index: 10;
 }
 #user-info {
   color: #8a8a8a;

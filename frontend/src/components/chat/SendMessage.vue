@@ -1,7 +1,7 @@
 <template>
   <div id="chat-room-wrapper">
     <div id="message-textarea">
-      <p class="notice-msg">{{ this.notice }}</p>
+      <p class="notice-msg">{{ this.noticeComputed }}</p>
 
       <div id="chat-body"></div>
     </div>
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 export interface ChatInformation {
   name: string;
@@ -28,17 +28,30 @@ export interface ChatInformation {
 
 @Component
 export default class SendMessage extends Vue {
+  @Prop() name?: string;
+
   notice = "";
   message = "";
   nickName = "";
   chatMessage = "";
 
+  target = "";
   constructor() {
     super();
   }
 
   created() {
     this.connectSocket();
+  }
+
+  private setChatRoom() {
+    console.log(this.name);
+
+    if (this.name) {
+      this.noticeComputed = `${this.name} 님 과 연결합니다.`;
+    } else {
+      this.noticeComputed = "상대방을 선택 해주세요.";
+    }
   }
 
   private connectSocket() {
@@ -115,22 +128,28 @@ export default class SendMessage extends Vue {
       return false;
     }
   }
-
-  // mounted() {
-  //   this.getMessage();
-  // }
+  private set noticeComputed(msg) {
+    this.notice = msg;
+  }
+  private get noticeComputed() {
+    return this.notice;
+  }
+  mounted() {
+    this.getMessage();
+    this.setChatRoom();
+  }
 }
 </script>
 
 <style scoped>
 #chat-room-wrapper {
   padding-top: 1em;
-  background: #cfcff4;
+  background: #f2f2ff;
   width: 100vw;
   height: 800px;
 }
 #message-textarea {
-  background: #ffffff;
+  background: #f8f3ee;
   border-radius: 5px;
   margin-top: 4em;
   width: 70vw;
@@ -138,19 +157,20 @@ export default class SendMessage extends Vue {
   min-width: 1000px;
   height: 87%;
   margin-left: 22em;
+  padding-bottom: 4em;
   overflow-y: auto;
-  box-shadow: 0 5px 15px 8px grey;
+  box-shadow: 0 10px 20px 10px #c5c5c5;
+  border: 2px solid #d7d7d7;
 }
+
 #message-input {
   z-index: 5;
-  top: 52.5em;
-  left: 26.5em;
-  position: fixed;
   padding-right: 4em;
+  margin-left: 3.4em;
   border: 1px solid #afafaf;
-  color: #626262;
+  color: #151515;
   font-weight: 500;
-  border-radius: 10px;
+  border-radius: 5px;
   padding-left: 5px;
   width: 100%;
   max-width: 937px;
@@ -161,17 +181,25 @@ export default class SendMessage extends Vue {
 #send-message-btn {
   z-index: 10;
   border-left: 1px solid #afafaf;
-  position: fixed;
+  position: relative;
+  left: -4em;
   color: #626262;
-  bottom: 5.3em;
-  left: 97.6em;
 }
 #send-message-btn:hover {
   cursor: pointer;
   background: #cfcff4;
 }
 #message-input-area {
-  height: 20%;
+  position: relative;
+  top: -2em;
+  background: #cfcff4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3em;
+  width: 1005px;
+  margin-left: 22em;
+  border-radius: 0 0 10px 10px;
 }
 
 .notice-msg {

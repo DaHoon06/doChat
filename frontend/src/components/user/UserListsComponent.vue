@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Emit, Vue } from "vue-property-decorator";
 
 export interface IUserLists {
   name: string;
@@ -61,8 +61,9 @@ export default class ChatComponent extends Vue {
     this.userLists = data;
   }
 
+  @Emit("target")
   doChat(name: string) {
-    this.$router.push({ path: `/chat/${name}` });
+    return name;
   }
 
   async updated() {
@@ -74,21 +75,17 @@ export default class ChatComponent extends Vue {
 </script>
 
 <style scoped>
-@media screen and (max-width: 1000px) {
-  /*#user-list {*/
-  /*  display: flex;*/
-  /*  flex-direction: row;*/
-  /*  justify-content: space-between;*/
-  /*}*/
-}
 #user-list {
   position: fixed;
   width: 100vw;
   max-width: 330px;
   padding-top: 1em;
-  background: #fdfcfd;
+  background: #f2f2ff;
   min-height: 800px;
   height: 100vh;
+  border-radius: 0 0 25px 0;
+  box-shadow: 0 31px 10px 5px #cbcbcb;
+  border-right: 2px solid #e5e5e5;
 }
 
 #user-list-section {
@@ -156,7 +153,8 @@ export default class ChatComponent extends Vue {
 
 .list-items {
   margin: 0.5em 0.5em;
-  color: #cfcff4;
+  color: #8c8989;
+  font-weight: 500;
 }
 
 .list-items > a:hover {

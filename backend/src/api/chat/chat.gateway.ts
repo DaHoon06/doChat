@@ -7,6 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { ChatRoomService } from './chatRoom.service';
 import { Server, Socket } from 'socket.io';
+import { UserService } from '../user/user.service';
 
 @WebSocketGateway(9001, {
   cors: {
@@ -14,7 +15,10 @@ import { Server, Socket } from 'socket.io';
   },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly ChartRoomService: ChatRoomService) {}
+  constructor(
+    private readonly ChartRoomService: ChatRoomService,
+    private readonly UserService: UserService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -32,11 +36,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('closedChat')
   public handleDisconnect(client: Socket): void {
     const { roomId, nickName } = client.data;
-
-    console.log(
-      '소켓 통신 전 데이터 : ',
-      ...this.server.sockets.adapter.rooms.get(roomId),
-    );
     if (
       roomId != 'room:lobby' &&
       !this.server.sockets.adapter.rooms.get(roomId)
@@ -64,10 +63,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  //처음 접속시 닉네임 등 최초 설정
+  //roomId = > Object ID
   @SubscribeMessage('setInit')
-  setInit(client: Socket, data: any): any {
+  async setInit(client: Socket, data: any): Promise<any> {
     const { nickName } = data;
+
+    console.log(nickName);
+    const result = await this.UserService.findByName(nickName);
+    console.log(result);
     console.log(client.data.isInit);
     if (client.data.isInit) return;
     client.data.nickName = nickName;
@@ -129,5 +132,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       roomId: roomId,
       roomName: this.ChartRoomService.getChatRoom(roomId).roomName,
     };
+  }
+
+  @SubscribeMessage('propsName')
+  sendPropsData(client: Socket, name: string) {
+    client.emit('propsName', name);
   }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { JwtPayload } from '../../../../api/auth/jwt.config';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../../schema/user/user.schema';
 import { Model } from 'mongoose';

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -6,6 +6,7 @@ import { RouterModule } from 'nest-router';
 import { MODULES, ROUTES } from './module.router';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatModule } from './api/chat/chat.module';
+import * as redisStore from 'cache-manager-ioredis';
 
 @Module({
   imports: [
@@ -23,6 +24,18 @@ import { ChatModule } from './api/chat/chat.module';
       inject: [ConfigService],
     }),
     ...MODULES,
+    // CacheModule.register({
+    //   store: redisStore,
+    //   host: 'localhost',
+    //   clusterConfig: {
+    //     nodes: [
+    //       {
+    //         port: 3001,
+    //         host: '127.0.0.1',
+    //       },
+    //     ],
+    //   },
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],
